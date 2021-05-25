@@ -12,7 +12,7 @@ public interface EmpresaDao {
 
 	void deletar(Integer id);
 
-	Empresa procurar(Integer id);
+	Empresa procurar(Empresa empresa);
 
 	List<Empresa> listarEmpresas();
 

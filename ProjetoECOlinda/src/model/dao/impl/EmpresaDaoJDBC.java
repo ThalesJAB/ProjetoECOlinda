@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import db.DB;
 import db.DbException;
 import model.dao.EmpresaDao;
 import model.entities.Empresa;
@@ -43,9 +44,89 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 	}
 
 	@Override
-	public Empresa procurar(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Empresa procurar(Empresa empresa) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		Empresa empresaRetorno = null;
+
+		try {
+
+			st = connection.prepareStatement("SELECT  " + "	EMPRESA.*, " + "	TELEFONE.id_telefone, "
+					+ "	TELEFONE.telefone, " + "	TELEFONE.empresa_id_empresa, " + "	ENDERECO.id_endereco, "
+					+ "	ENDERECO.cep, " + "	ENDERECO.logradouro, " + "	ENDERECO.numero, " + "	ENDERECO.complemento, "
+					+ "	ENDERECO.bairro, " + "	ENDERECO.cidade, " + "	ENDERECO.estado, "
+					+ "	ENDERECO.empresa_id_empresa, " + "	RESIDUO.id_residuo, " + "	RESIDUO.tipo_residuo, "
+					+ "	RESIDUO.descricao_residuo " + "FROM EMPRESA " + "INNER JOIN TELEFONE "
+					+ "ON EMPRESA.id_empresa = TELEFONE.empresa_id_empresa " + "INNER JOIN ENDERECO "
+					+ "ON EMPRESA.id_empresa = ENDERECO.empresa_id_empresa " + "INNER JOIN RESIDUO_EMPRESA "
+					+ "ON EMPRESA.id_empresa = RESIDUO_EMPRESA.empresa_id_empresa " + "INNER JOIN RESIDUO "
+					+ "ON RESIDUO_EMPRESA.residuo_id_residuo = RESIDUO.id_residuo "
+					+ "WHERE upper(EMPRESA.nome_empresa) = ? AND EMPRESA.status = true AND TELEFONE.status = true AND ENDERECO.status = true AND RESIDUO_EMPRESA.status = true;");
+
+			String nomeMaiusculo = empresa.getNome().toUpperCase();
+
+			st.setString(1, nomeMaiusculo);
+
+			rs = st.executeQuery();
+
+			Map<Integer, Telefone> telefoneMap = new HashMap<>();
+			Map<Integer, Residuo> residuoMap = new HashMap<>();
+			Map<Integer, Endereco> enderecoMap = new HashMap<>();
+			Map<Integer, Empresa> empresaMap = new HashMap<>();
+
+			while (rs.next()) {
+				Telefone telefone = telefoneMap.get(rs.getInt("id_telefone"));
+				Residuo residuo = residuoMap.get(rs.getInt("id_residuo"));
+				Endereco endereco = enderecoMap.get(rs.getInt("id_endereco"));
+				Empresa empresaAnalise = empresaMap.get(rs.getInt("id_empresa"));
+
+				if (Objects.isNull(telefone)) {
+					telefone = instanciarTelefone(rs);
+					telefoneMap.put(rs.getInt("id_telefone"), telefone);
+
+				}
+
+				if (Objects.isNull(residuo)) {
+					residuo = instanciarResiduo(rs);
+					residuoMap.put(rs.getInt("id_residuo"), residuo);
+				}
+
+				if (Objects.isNull(endereco)) {
+					endereco = instanciarEndereco(rs);
+					enderecoMap.put(rs.getInt("id_endereco"), endereco);
+				}
+
+				if (Objects.isNull(empresaAnalise)) {
+					empresaAnalise = instanciarEmpresa(rs);
+					empresaMap.put(rs.getInt("id_empresa"), empresaAnalise);
+				}
+
+				if (!empresaAnalise.getTelefones().contains(telefone)) {
+					empresaAnalise.addTelefone(telefone);
+
+				}
+
+				if (!empresaAnalise.getEnderecos().contains(endereco)) {
+					empresaAnalise.addEndereco(endereco);
+				}
+
+				if (!empresaAnalise.getResiduos().contains(residuo)) {
+					empresaAnalise.addResiduo(residuo);
+				}
+
+				empresaRetorno = empresaAnalise;
+
+			}
+			
+			return empresaRetorno;
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+		}
+
 	}
 
 	@Override
@@ -68,7 +149,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 
 			rs = st.executeQuery();
 			List<Empresa> empresas = new ArrayList<>();
-			
+
 			Map<Integer, Telefone> telefoneMap = new HashMap<>();
 			Map<Integer, Residuo> residuoMap = new HashMap<>();
 			Map<Integer, Endereco> enderecoMap = new HashMap<>();
@@ -79,56 +160,57 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 				Residuo residuo = residuoMap.get(rs.getInt("id_residuo"));
 				Endereco endereco = enderecoMap.get(rs.getInt("id_endereco"));
 				Empresa empresa = empresaMap.get(rs.getInt("id_empresa"));
-				
-				if(Objects.isNull(telefone)) {
+
+				if (Objects.isNull(telefone)) {
 					telefone = instanciarTelefone(rs);
 					telefoneMap.put(rs.getInt("id_telefone"), telefone);
-					
+
 				}
-				
-				if(Objects.isNull(residuo)) {
+
+				if (Objects.isNull(residuo)) {
 					residuo = instanciarResiduo(rs);
 					residuoMap.put(rs.getInt("id_residuo"), residuo);
 				}
-				
-				if(Objects.isNull(endereco)) {
+
+				if (Objects.isNull(endereco)) {
 					endereco = instanciarEndereco(rs);
 					enderecoMap.put(rs.getInt("id_endereco"), endereco);
 				}
-				
-				if(Objects.isNull(empresa)) {
+
+				if (Objects.isNull(empresa)) {
 					empresa = instanciarEmpresa(rs);
 					empresaMap.put(rs.getInt("id_empresa"), empresa);
 				}
-				
-				if(!empresa.getTelefones().contains(telefone)) {
+
+				if (!empresa.getTelefones().contains(telefone)) {
 					empresa.addTelefone(telefone);
-					
+
 				}
-				
-				if(!empresa.getEnderecos().contains(endereco)) {
+
+				if (!empresa.getEnderecos().contains(endereco)) {
 					empresa.addEndereco(endereco);
 				}
-				
-				if(!empresa.getResiduos().contains(residuo)) {
+
+				if (!empresa.getResiduos().contains(residuo)) {
 					empresa.addResiduo(residuo);
 				}
-				
-				if(!empresas.contains(empresa)){
+
+				if (!empresas.contains(empresa)) {
 					empresas.add(empresa);
-				}	
-				
+				}
+
 			}
-			
+
 			return empresas;
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
 		}
-	
 
 	}
-	
 
 	public Telefone instanciarTelefone(ResultSet rs) throws SQLException {
 		Telefone telefone = new Telefone();
@@ -138,7 +220,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 		telefone.setStatus(true);
 		return telefone;
 	}
-	
+
 	public Residuo instanciarResiduo(ResultSet rs) throws SQLException {
 		Residuo residuo = new Residuo();
 		residuo.setId(rs.getInt("id_residuo"));
@@ -149,7 +231,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 		return residuo;
 
 	}
-	
+
 	public Endereco instanciarEndereco(ResultSet rs) throws SQLException {
 		Endereco endereco = new Endereco();
 		endereco.setId(rs.getInt("id_endereco"));
@@ -166,7 +248,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 		return endereco;
 
 	}
-	
+
 	public Empresa instanciarEmpresa(ResultSet rs) throws SQLException {
 		Empresa empresa = new Empresa();
 		empresa.setId(rs.getInt("id_empresa"));
@@ -177,8 +259,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 		empresa.setStatus(rs.getBoolean("status"));
 
 		return empresa;
-		
+
 	}
-	
-	
+
 }
