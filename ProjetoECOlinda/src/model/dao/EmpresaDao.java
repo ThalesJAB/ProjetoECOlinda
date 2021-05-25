@@ -14,6 +14,6 @@ public interface EmpresaDao {
 
 	Empresa procurar(Integer id);
 
-	List<Empresa> listar();
+	List<Empresa> listarEmpresas();
 
 }

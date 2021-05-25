@@ -90,7 +90,7 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 					}
 
 				} else {
-					throw new DbException("Nenhum Ponto Favorito foi cadastrado !");
+					System.out.println("Essa empresa ja esta cadastrada como ponto favorito");
 				}
 			} else {
 				System.out.println("Falha!, Ponto Favorito ja existente");
