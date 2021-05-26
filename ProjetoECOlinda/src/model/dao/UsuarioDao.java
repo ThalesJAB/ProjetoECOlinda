@@ -1,24 +1,18 @@
 package model.dao;
 
-import java.util.List;
-
-import model.entities.PontoFavorito;
 import model.entities.Usuario;
 
 
 public interface UsuarioDao {
 	
-	void cadastrar(Usuario Usuario);
+	void cadastrar(Usuario usuario);
 
-	void alterar(Usuario Usuario);
+	void alterar(Usuario usuario);
 
-	void deletar(Integer id);
+	void deletar(Usuario usuario);
 
-	Usuario procurar(Integer id);
+	Usuario login(Usuario usuario);
 
-	List<Usuario> listar();
-	
-	List<PontoFavorito> listarPontosFav(Integer id);
 
 
 }

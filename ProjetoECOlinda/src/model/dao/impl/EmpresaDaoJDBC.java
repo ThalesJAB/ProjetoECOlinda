@@ -59,6 +59,9 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 			
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
 		}
 	}
 
@@ -267,6 +270,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 			
 			rs = st.executeQuery();
 			
+			
 			Map<Integer, Telefone> telefoneMap = new HashMap<>();
 			Map<Integer, Residuo> residuoMap = new HashMap<>();
 			Map<Integer, Endereco> enderecoMap = new HashMap<>();
@@ -315,6 +319,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 				empresaRetorno = empresaAnalise;
 
 			}
+			
 
 			return empresaRetorno;
 			

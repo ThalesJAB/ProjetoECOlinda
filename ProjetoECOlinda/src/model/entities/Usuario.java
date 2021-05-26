@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Usuario implements Serializable{
+public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -100,12 +100,24 @@ public class Usuario implements Serializable{
 		return pontosFav;
 	}
 
+	public void setPontosFav(List<PontoFavorito> pontosFav) {
+		this.pontosFav = pontosFav;
+	}
+
 	public List<Telefone> getTelefones() {
 		return telefones;
 	}
 
+	public void setTelefones(List<Telefone> telefones) {
+		this.telefones = telefones;
+	}
+
 	public List<Endereco> getEnderecos() {
 		return enderecos;
+	}
+
+	public void setEnderecos(List<Endereco> enderecos) {
+		this.enderecos = enderecos;
 	}
 
 	public void addPontoFavorito(PontoFavorito pontoFavorito) {
