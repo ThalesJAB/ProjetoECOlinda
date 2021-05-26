@@ -13,6 +13,8 @@ public interface EmpresaDao {
 	void deletar(Empresa empresa);
 
 	Empresa procurar(Empresa empresa);
+	
+	Empresa login(Empresa empresa);
 
 	List<Empresa> listarEmpresas();
 
