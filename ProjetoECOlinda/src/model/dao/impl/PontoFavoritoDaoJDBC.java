@@ -41,8 +41,7 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 
 				st = connection.prepareStatement(
 						"INSERT INTO USUARIO_PONTO_FAVORITO(usuario_id_usuario, ponto_favorito_id_ponto_favorito, status) values "
-								+ "(?, ?, true)",
-						Statement.RETURN_GENERATED_KEYS);
+								+ "(?, ?, true)");
 
 				st.setInt(1, pontoFavorito.getUsuario().getId());
 				st.setInt(2, pontoFavExiste.getId());

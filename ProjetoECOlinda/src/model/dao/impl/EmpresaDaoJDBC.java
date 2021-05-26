@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,18 +29,110 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 
 	@Override
 	public void cadastrar(Empresa empresa) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			st = connection.prepareStatement("INSERT INTO EMPRESA(nome_empresa, email_empresa, login_empresa, senha_empresa, status) VALUES\r\n"
+											+ "(?, ?, ?, ?, true)", Statement.RETURN_GENERATED_KEYS);
+			
+			st.setString(1, empresa.getNome());
+			st.setString(2, empresa.getEmail());
 
+			st.setString(3, empresa.getLogin());
+
+			st.setString(4, empresa.getSenha());
+			
+			
+			int linhasAf = st.executeUpdate();
+			
+			if(linhasAf > 0) {
+				rs = st.getGeneratedKeys();
+				
+				if(rs.next()) {
+					int id = rs.getInt(1);
+					empresa.setId(id);
+					System.out.println("Empresa Cadastrada com sucesso");
+				}
+			}
+
+			
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
 	}
 
 	@Override
 	public void alterar(Empresa empresa) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+
+		try {
+			st = connection.prepareStatement("UPDATE EMPRESA " + "SET " + "	nome_empresa = ?, " + "	email_empresa = ?, "
+					+ "	login_empresa = ?, " + "	senha_empresa = ? "
+
+					+ "WHERE id_empresa = ?");
+			
+			
+			st.setString(1, empresa.getNome());
+			st.setString(2, empresa.getEmail());
+			st.setString(3, empresa.getLogin());
+			st.setString(4, empresa.getSenha());
+			st.setInt(5, empresa.getId());
+			
+			int linhasAf = st.executeUpdate();
+
+			if (linhasAf > 0) {
+				System.out.println("Empresa alterada com sucesso !");
+			} else {
+				throw new DbException("Nenhuma empresa foi alterada !");
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+		}
 
 	}
 
 	@Override
-	public void deletar(Integer id) {
-		// TODO Auto-generated method stub
+	public void deletar(Empresa empresa) {
+		PreparedStatement st1 = null;
+		PreparedStatement st2 = null;
+		PreparedStatement st3 = null;
+		PreparedStatement st4 = null;
+
+		try {
+			st1 = connection.prepareStatement("UPDATE EMPRESA " + "SET status = false " + "WHERE id_empresa = ?;");
+
+			st2 = connection
+					.prepareStatement("UPDATE ENDERECO; " + "SET status = false " + "WHERE empresa_id_empresa = ?;");
+
+			st3 = connection
+					.prepareStatement("UPDATE TELEFONE " + "SET status = false " + "WHERE empresa_id_emoresa ?;");
+
+			st4 = connection.prepareStatement(
+					"UPDATE RESIDUO_EMPRESA " + "SET status = false " + "WHERE empresa_id_empresa = ?;");
+
+			st1.setInt(1, empresa.getId());
+			st2.setInt(1, empresa.getId());
+			st3.setInt(1, empresa.getId());
+			st4.setInt(1, empresa.getId());
+
+			int linhasAf1 = st1.executeUpdate();
+			int linhasAf2 = st2.executeUpdate();
+			int linhasAf3 = st3.executeUpdate();
+			int linhasAf4 = st4.executeUpdate();
+			
+			
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st3);
+			DB.closeStatement(st2);
+			DB.closeStatement(st1);
+		}
 
 	}
 
@@ -117,7 +210,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 				empresaRetorno = empresaAnalise;
 
 			}
-			
+
 			return empresaRetorno;
 
 		} catch (SQLException e) {

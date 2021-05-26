@@ -10,7 +10,7 @@ public interface EmpresaDao {
 
 	void alterar(Empresa empresa);
 
-	void deletar(Integer id);
+	void deletar(Empresa empresa);
 
 	Empresa procurar(Empresa empresa);
 
