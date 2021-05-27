@@ -48,6 +48,12 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			} else {
 				st.setDate(5, new java.sql.Date(usuario.getDataNasc().getTime()));
 			}
+			
+			int linhasAf = st.executeUpdate();
+			
+			if(linhasAf > 0) {
+				System.out.println("Usuario cadastrado com sucesso");
+			}
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
@@ -107,6 +113,15 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			st4 = connection.prepareStatement(
 					"UPDATE USUARIO_ENDERECO " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
 			st4.setInt(1, usuario.getId());
+			
+			int linhasAf = st1.executeUpdate();
+			st2.execute();
+			st3.execute();
+			st4.execute();
+			
+			if(linhasAf > 0) {
+				System.out.println("Usuario excluido com sucesso");
+			}
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
