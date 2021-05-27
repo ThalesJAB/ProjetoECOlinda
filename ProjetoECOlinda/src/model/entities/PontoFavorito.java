@@ -7,7 +7,7 @@ public class PontoFavorito implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
-	private Usuario usuario;
+	private Integer idUsuario;
 	private Empresa empresa;
 	private Boolean status;
 
@@ -15,9 +15,9 @@ public class PontoFavorito implements Serializable {
 
 	}
 
-	public PontoFavorito(Integer id, Usuario usuario, Empresa empresa, Boolean status) {
+	public PontoFavorito(Integer id, Integer idUsuario, Empresa empresa, Boolean status) {
 		this.id = id;
-		this.usuario = usuario;
+		this.idUsuario = idUsuario;
 		this.empresa = empresa;
 		this.status = status;
 	}
@@ -30,12 +30,12 @@ public class PontoFavorito implements Serializable {
 		this.id = id;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public Integer getIdUsuario() {
+		return idUsuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setIdUsuario(Integer idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 	public Empresa getEmpresa() {
@@ -55,47 +55,9 @@ public class PontoFavorito implements Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PontoFavorito other = (PontoFavorito) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-
-	@Override
 	public String toString() {
-		return "=============================================================================================================================\n"
-				+"PONTO FAVORITO [Id=" + this.id + ", Usuario [id=" + usuario.getId() + ", nome=" + usuario.getNome() + ", email= " + usuario.getEmail()+"]\n"
-				+"\nEMPRESA: \n"
-				+ "[id=" + empresa.getId()  + ", nome=" + empresa.getNome() + ",email=" + empresa.getEmail()+"]\n"
-				+ "\nTELEFONES EMPRESA: \n"
-				+ empresa.getTelefones()
-				+ "\n\n"
-				+ "ENDERECOS EMPRESA: \n"
-				+ empresa.getEnderecos()
-				+ "\n\n"
-				+ "RESIDUOS EMPRESA: \n"
-				+ empresa.getResiduos()
-				+"\n";
-		//return "PontoFavorito [id=" + id + ", usuario=" + usuario + ", empresa=" + empresa + ", status=" + status + "]";
+		return "PontoFavorito [id=" + id + ", idUsuario=" + idUsuario +  ", status=" + status
+				+ "]";
 	}
-
 
 }

@@ -43,7 +43,7 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 						"INSERT INTO USUARIO_PONTO_FAVORITO(usuario_id_usuario, ponto_favorito_id_ponto_favorito, status) values "
 								+ "(?, ?, true)");
 
-				st.setInt(1, pontoFavorito.getUsuario().getId());
+				st.setInt(1, pontoFavorito.getIdUsuario());
 				st.setInt(2, pontoFavExiste.getId());
 
 				int linhasAf = st.executeUpdate();
@@ -265,7 +265,7 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 		pontoFavorito.setId(rs.getInt("id_ponto_favorito"));
 		pontoFavorito.setStatus(rs.getBoolean("statusPontoFv"));
 		pontoFavorito.setEmpresa(empresa);
-		pontoFavorito.setUsuario(usuario);
+		pontoFavorito.setIdUsuario(usuario.getId());
 		return pontoFavorito;
 	}
 

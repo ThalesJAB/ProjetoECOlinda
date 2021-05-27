@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,6 @@ import model.dao.UsuarioDao;
 import model.entities.Empresa;
 import model.entities.Endereco;
 import model.entities.PontoFavorito;
-import model.entities.Residuo;
 import model.entities.Telefone;
 import model.entities.Usuario;
 
@@ -31,19 +31,88 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 
 	@Override
 	public void cadastrar(Usuario usuario) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+
+		try {
+			st = connection.prepareStatement(
+					"INSERT USUARIO(nome_usuario, email_usuario, login_usuario, senha_usuario, data_nasc, status) VALUES\r\n"
+							+ "(?, ?, ?, ?, ?, true);");
+			st.setString(1, usuario.getNome());
+			st.setString(2, usuario.getEmail());
+			st.setString(3, usuario.getLogin());
+			st.setString(4, usuario.getSenha());
+
+			if (Objects.isNull(usuario.getDataNasc())) {
+				st.setNull(5, Types.DATE);
+
+			} else {
+				st.setDate(5, new java.sql.Date(usuario.getDataNasc().getTime()));
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
 
 	}
 
 	@Override
 	public void alterar(Usuario usuario) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+
+		try {
+			st = connection.prepareStatement("UPDATE USUARIO " + "SET " + "	nome_usuario = ?, " + "	email_usuario = ?, "
+					+ "	login_usuario = ?, " + "	senha_usuario = ?, " + "	data_nasc = ? "
+					+ "WHERE id_usuario = ?");
+
+			st.setString(1, usuario.getNome());
+			st.setString(2, usuario.getEmail());
+			st.setString(3, usuario.getLogin());
+			st.setString(4, usuario.getSenha());
+			st.setDate(5, new java.sql.Date(usuario.getDataNasc().getTime()));
+
+			int linhasAf = st.executeUpdate();
+
+			if (linhasAf > 0) {
+				System.out.println("Usuario alterado com sucesso");
+			}
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
 
 	}
 
 	@Override
 	public void deletar(Usuario usuario) {
-		// TODO Auto-generated method stub
+		PreparedStatement st1 = null;
+		PreparedStatement st2 = null;
+		PreparedStatement st3 = null;
+		PreparedStatement st4 = null;
+
+		try {
+			st1 = connection.prepareStatement("UPDATE USUARIO " + "SET status = false " + "WHERE id_usuario = ?;");
+			st1.setInt(1, usuario.getId());
+
+			st2 = connection.prepareStatement(
+					"UPDATE USUARIO_PONTO_FAVORITO " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
+			st2.setInt(1, usuario.getId());
+
+			st3 = connection
+					.prepareStatement("UPDATE TELEFONE " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
+			st3.setInt(1, usuario.getId());
+
+			st4 = connection.prepareStatement(
+					"UPDATE USUARIO_ENDERECO " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
+			st4.setInt(1, usuario.getId());
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st4);
+			DB.closeStatement(st3);
+			DB.closeStatement(st2);
+			DB.closeStatement(st1);
+
+		}
 
 	}
 
@@ -73,7 +142,6 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			Map<Integer, Telefone> telefoneMap = new HashMap<>();
 			Map<Integer, Endereco> enderecoMap = new HashMap<>();
 			Map<Integer, Usuario> usuarioMap = new HashMap<>();
-			
 
 			while (rs.next()) {
 				Telefone telefone = telefoneMap.get(rs.getInt("id_telefone"));
@@ -107,44 +175,34 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 
 				usuarioRetorno = usuarioAnalise;
 			}
-			
-			st2 = connection.prepareStatement("SELECT "
-					+ "	PONTO_FAVORITO.id_ponto_favorito, "
-					+ "	EMPRESA.*, "
-					+ "	ENDERECO.*, "
-					+ "	TELEFONE.* "
-					+ "FROM PONTO_FAVORITO "
-					+ "INNER JOIN USUARIO_PONTO_FAVORITO "
+
+			st2 = connection.prepareStatement("SELECT " + "	PONTO_FAVORITO.id_ponto_favorito, " + "	EMPRESA.*, "
+					+ "	ENDERECO.*, " + "	TELEFONE.* " + "FROM PONTO_FAVORITO " + "INNER JOIN USUARIO_PONTO_FAVORITO "
 					+ "ON PONTO_FAVORITO.id_ponto_favorito = USUARIO_PONTO_FAVORITO.ponto_favorito_id_ponto_favorito "
-					+ "INNER JOIN USUARIO "
-					+ "ON USUARIO_PONTO_FAVORITO.usuario_id_usuario = USUARIO.id_usuario "
-					+ "INNER JOIN EMPRESA "
-					+ "ON PONTO_FAVORITO.empresa_id_empresa = EMPRESA.id_empresa "
-					+ "INNER JOIN ENDERECO "
-					+ "ON EMPRESA.id_empresa = ENDERECO.empresa_id_empresa "
-					+ "INNER JOIN TELEFONE "
-					+ "ON EMPRESA.id_empresa = TELEFONE.empresa_id_empresa "
+					+ "INNER JOIN USUARIO " + "ON USUARIO_PONTO_FAVORITO.usuario_id_usuario = USUARIO.id_usuario "
+					+ "INNER JOIN EMPRESA " + "ON PONTO_FAVORITO.empresa_id_empresa = EMPRESA.id_empresa "
+					+ "INNER JOIN ENDERECO " + "ON EMPRESA.id_empresa = ENDERECO.empresa_id_empresa "
+					+ "INNER JOIN TELEFONE " + "ON EMPRESA.id_empresa = TELEFONE.empresa_id_empresa "
 					+ "WHERE  USUARIO.login_usuario = ? AND USUARIO.senha_usuario = ? AND PONTO_FAVORITO.status = true AND USUARIO_PONTO_FAVORITO.status = true AND ENDERECO.status = true "
 					+ "AND EMPRESA.status = true AND TELEFONE.status = true;");
-			
-			
+
 			st2.setString(1, usuario.getLogin());
 			st2.setString(2, usuario.getSenha());
-			
+
 			rs2 = st2.executeQuery();
-			
+
 			Map<Integer, Empresa> empresaMap = new HashMap<>();
 			Map<Integer, Telefone> telefoneEmpMap = new HashMap<>();
 			Map<Integer, Endereco> enderecoEmpMap = new HashMap<>();
 			Map<Integer, PontoFavorito> pontoFavMap = new HashMap<>();
 			List<PontoFavorito> pontosUsuario = new ArrayList<>();
-			
-			while(rs2.next()) {
+
+			while (rs2.next()) {
 				Empresa empresaAux = empresaMap.get(rs2.getInt("id_empresa"));
 				Telefone telefoneEmp = telefoneEmpMap.get(rs2.getInt("id_telefone"));
 				Endereco enderecoEmp = enderecoEmpMap.get(rs2.getInt("id_endereco"));
 				PontoFavorito pontoFav = pontoFavMap.get(rs2.getInt("id_ponto_favorito"));
-				
+
 				if (Objects.isNull(telefoneEmp)) {
 					telefoneEmp = instanciarTelefoneEmpresa(rs2);
 					telefoneMap.put(rs2.getInt("id_telefone"), telefoneEmp);
@@ -156,41 +214,40 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 					enderecoMap.put(rs2.getInt("id_endereco"), enderecoEmp);
 				}
 
-				if(Objects.isNull(empresaAux)) {
+				if (Objects.isNull(empresaAux)) {
 					empresaAux = instanciarEmpresa(rs2);
 					empresaMap.put(rs2.getInt("id_empresa"), empresaAux);
 				}
-				
-				if(Objects.isNull(pontoFav)){
+
+				if (Objects.isNull(pontoFav)) {
 					pontoFav = instanciarPontoFavorito(rs2);
 					pontoFavMap.put(rs2.getInt("id_ponto_favorito"), pontoFav);
 				}
-				
-				if(!empresaAux.getTelefones().contains(telefoneEmp)) {
+
+				if (!empresaAux.getTelefones().contains(telefoneEmp)) {
 					empresaAux.addTelefone(telefoneEmp);
 				}
-				
-				if(!empresaAux.getEnderecos().contains(enderecoEmp)) {
+
+				if (!empresaAux.getEnderecos().contains(enderecoEmp)) {
 					empresaAux.addEndereco(enderecoEmp);
 				}
-				
-				if(pontoFav.getEmpresa() == null) {
+
+				if (pontoFav.getEmpresa() == null) {
 					pontoFav.setEmpresa(empresaAux);
 				}
-				
-				if(pontoFav.getEmpresa().getId() == empresaAux.getId()){
+
+				if (pontoFav.getEmpresa().getId() == empresaAux.getId()) {
 					pontoFav.setEmpresa(empresaAux);
-					pontoFav.setUsuario(usuarioRetorno);
+					pontoFav.setIdUsuario(usuarioRetorno.getId());
 				}
-				
+
 				pontosUsuario.add(pontoFav);
-				
+
 			}
-			
+
 			usuarioRetorno.setPontosFav(pontosUsuario);
-			
+
 			return usuarioRetorno;
-			
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
@@ -230,12 +287,12 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 	}
 
 	private PontoFavorito instanciarPontoFavorito(ResultSet rs2) throws SQLException {
-		PontoFavorito pontoFavorito= new PontoFavorito();
+		PontoFavorito pontoFavorito = new PontoFavorito();
 		pontoFavorito.setId(rs2.getInt("id_ponto_favorito"));
 		pontoFavorito.setStatus(true);
-		
+
 		return pontoFavorito;
-		
+
 	}
 
 	private Empresa instanciarEmpresa(ResultSet rs2) throws SQLException {
@@ -259,8 +316,8 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 		usuario.setLogin(rs.getString("login_usuario"));
 		usuario.setSenha(rs.getString("senha_usuario"));
 		usuario.setDataNasc(rs.getDate("data_nasc"));
-		usuario.setStatus(rs.getBoolean("status"));	
-		
+		usuario.setStatus(rs.getBoolean("status"));
+
 		return usuario;
 	}
 

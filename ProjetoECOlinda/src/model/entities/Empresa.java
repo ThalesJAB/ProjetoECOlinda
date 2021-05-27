@@ -151,8 +151,7 @@ public class Empresa implements Serializable {
 	@Override
 	public String toString() {
 		return "Empresa [id=" + id + ", nome=" + nome + ", login=" + login + ", senha=" + senha + ", email=" + email
-				+ ", status=" + status + ", telefones=" + telefones + ", enderecos=" + enderecos + ", residuos="
-				+ residuos + "]";
+				+ ", status=" + status+"]";
 	}
 
 	

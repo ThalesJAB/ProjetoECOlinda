@@ -249,7 +249,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 					+ "	ENDERECO.complemento, "
 					+ "	ENDERECO.bairro, "
 					+ "	ENDERECO.cidade,  "
-					+ "	ENDERECO.estado "
+					+ "	ENDERECO.estado, "
 					+ "	ENDERECO.empresa_id_empresa, "
 					+ "	RESIDUO.id_residuo, "
 					+ "	RESIDUO.tipo_residuo, "
