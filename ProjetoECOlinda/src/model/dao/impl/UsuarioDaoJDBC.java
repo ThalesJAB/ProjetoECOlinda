@@ -51,6 +51,8 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
 		}
 
 	}
@@ -77,6 +79,8 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			}
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
 		}
 
 	}
