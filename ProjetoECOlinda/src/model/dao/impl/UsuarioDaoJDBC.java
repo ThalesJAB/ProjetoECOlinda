@@ -48,10 +48,10 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			} else {
 				st.setDate(5, new java.sql.Date(usuario.getDataNasc().getTime()));
 			}
-			
+
 			int linhasAf = st.executeUpdate();
-			
-			if(linhasAf > 0) {
+
+			if (linhasAf > 0) {
 				System.out.println("Usuario cadastrado com sucesso");
 			}
 
@@ -113,13 +113,13 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			st4 = connection.prepareStatement(
 					"UPDATE USUARIO_ENDERECO " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
 			st4.setInt(1, usuario.getId());
-			
+
 			int linhasAf = st1.executeUpdate();
 			st2.execute();
 			st3.execute();
 			st4.execute();
-			
-			if(linhasAf > 0) {
+
+			if (linhasAf > 0) {
 				System.out.println("Usuario excluido com sucesso");
 			}
 
@@ -264,8 +264,10 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 
 			}
 
-			usuarioRetorno.setPontosFav(pontosUsuario);
-
+			if(Objects.nonNull(usuarioRetorno)) {
+				usuarioRetorno.setPontosFav(pontosUsuario);
+			}
+			
 			return usuarioRetorno;
 
 		} catch (SQLException e) {
@@ -276,6 +278,8 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			DB.closeStatement(st);
 			DB.closeStatement(st2);
 		}
+		
+		
 
 	}
 
