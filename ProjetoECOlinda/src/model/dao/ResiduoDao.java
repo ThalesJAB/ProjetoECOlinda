@@ -8,6 +8,8 @@ import model.entities.Residuo;
 public interface ResiduoDao {
 	
 	void cadastrar(Residuo residuo);
+	
+	void cadastrarResiduoEmp(Residuo residuo, Empresa empresa);
 
 	void alterar(Residuo residuo);
 

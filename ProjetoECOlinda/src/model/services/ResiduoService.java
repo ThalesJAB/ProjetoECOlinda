@@ -32,6 +32,10 @@ public class ResiduoService {
 		residuoDao.cadastrar(residuo);
 	}
 
+	public void cadastrarResiduoEmp(Residuo residuo, Empresa empresa) {
+		residuoDao.cadastrarResiduoEmp(residuo, empresa);
+	}
+	
 	public void alterar(Residuo residuo) {
 		residuoDao.alterar(residuo);
 	}

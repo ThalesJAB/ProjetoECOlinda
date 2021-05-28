@@ -65,6 +65,33 @@ public class ResiduoDaoJDBC implements ResiduoDao {
 	}
 
 	@Override
+	public void cadastrarResiduoEmp(Residuo residuo, Empresa empresa) {
+		PreparedStatement st = null;
+
+		try {
+
+			st = connection.prepareStatement(
+					"INSERT INTO RESIDUO_EMPRESA(residuo_id_residuo, empresa_id_empresa, status) VALUES "
+							+ "(?, ?, true);");
+
+			st.setInt(1, residuo.getId());
+			st.setInt(2, empresa.getId());
+
+			int linhasAf = st.executeUpdate();
+			
+			if(linhasAf > 0) {
+				System.out.println("Residuo cadastrado com sucesso");
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(null);
+		}
+
+	}
+
+	@Override
 	public void alterar(Residuo residuo) {
 		PreparedStatement st = null;
 
