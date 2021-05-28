@@ -109,10 +109,10 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 			st1 = connection.prepareStatement("UPDATE EMPRESA " + "SET status = false " + "WHERE id_empresa = ?;");
 
 			st2 = connection
-					.prepareStatement("UPDATE ENDERECO; " + "SET status = false " + "WHERE empresa_id_empresa = ?;");
+					.prepareStatement("UPDATE ENDERECO " + "SET status = false " + "WHERE empresa_id_empresa = ?;");
 
 			st3 = connection
-					.prepareStatement("UPDATE TELEFONE " + "SET status = false " + "WHERE empresa_id_emoresa ?;");
+					.prepareStatement("UPDATE TELEFONE " + "SET status = false " + "WHERE empresa_id_empresa = ?;");
 
 			st4 = connection.prepareStatement(
 					"UPDATE RESIDUO_EMPRESA " + "SET status = false " + "WHERE empresa_id_empresa = ?;");
@@ -128,7 +128,7 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 			st4.execute();
 			
 			if(linhasAf > 0) {
-				System.out.println("Empresa deletada coM sucesso");
+				System.out.println("Empresa deletada com sucesso");
 			}else {
 				throw new DbException("Empresa não foi deletada");
 			}

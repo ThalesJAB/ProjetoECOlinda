@@ -5,42 +5,55 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
 import model.dao.impl.UsuarioDaoJDBC;
+import model.entities.Empresa;
 import model.entities.Endereco;
 import model.entities.PontoFavorito;
 import model.entities.Telefone;
 import model.entities.Usuario;
+import model.services.EnderecoService;
+import model.services.TelefoneService;
+import model.services.UsuarioService;
 
 public class TelaUsuario {
-	
+
 	private static TelaUsuario telaUsuario;
-	
+
 	private static TelaAplicacao telaAplicacao = TelaAplicacao.getInstance();
-	
-	private static TelaEmpresa telaEmpresa =  TelaEmpresa.getInstance();
-	
+
+	private static TelaEmpresa telaEmpresa = TelaEmpresa.getInstance();
+
+	private static UsuarioService usuarioService = UsuarioService.getInstance();
+
+	private static EnderecoService enderecoService = EnderecoService.getInstance();
+
+	private static TelefoneService telefoneService = TelefoneService.getInstance();
+
 	private TelaUsuario() {
-		
+
 	}
-	
+
 	public static TelaUsuario getInstance() {
-		if(Objects.isNull(telaUsuario)) {
+		if (Objects.isNull(telaUsuario)) {
 			telaUsuario = new TelaUsuario();
 			return telaUsuario;
 		}
-		
+
 		return telaUsuario;
 	}
 
 	// Cadastro de Usuário
 	// -----------------------------------------------------------------
-	public void CadastroUsuario() {
+	public void cadastroUsuario() {
 		Scanner sc = new Scanner(System.in);
-		String dataNasc;
-		Date dt = null;
+
+		Date dataNascimento = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		boolean statusUsuario = true;
 		System.out.println("Digite o seu nome: ");
 		String nome = sc.nextLine();
 		System.out.println("Digite o seu Email: ");
@@ -49,109 +62,169 @@ public class TelaUsuario {
 		String login = sc.nextLine();
 		System.out.println("Digite a sua Senha: ");
 		String senha = sc.nextLine();
-		System.out.println("Digite a sua Data de Nascimento: ");
-		boolean statusUsuario = true;
+		System.out.println("Digite a sua Data de Nascimento: dia/mes/ano ");
 		try {
-			dataNasc = sc.nextLine();
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			dt = df.parse(dataNasc);
+			dataNascimento = sdf.parse(sc.next());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// Cadastro de Endereço
-		// -------------------------------------------------------------------
-		System.out.println("Digite o seu Estado: ");
-		String estado = sc.nextLine();
-		System.out.println("Digite a sua Cidade: ");
-		String cidade = sc.nextLine();
-		System.out.println("Digite o seu Bairro: ");
-		String bairro = sc.nextLine();
-		System.out.println("Digite o seu Logradouro: ");
-		String logradouro = sc.nextLine();
-		System.out.println("Digite o seu Cep: ");
-		String cep = sc.nextLine();
-		System.out.println("Digite o seu Numero de Residencia: ");
-		int numero = sc.nextInt();
-		System.out.println("Digite o seu Complemento: ");
-		String complemento = sc.nextLine();
-		boolean statusEndereco = true;
-		// Cadastro de Telefone
-		// --------------------------------------------------------------------
-		System.out.println("Digite o seu Telefone: ");
-		String numTelefone = sc.nextLine();
-		boolean statusTelefone = true;
 
-		PontoFavorito pf = new PontoFavorito(null, null, null, true);
-		ArrayList<PontoFavorito> pontos = new ArrayList<PontoFavorito>();
-		pontos.add(pf);
+		Usuario usuario = new Usuario(null, nome, login, senha, email, dataNascimento, null, null, null, null);
 
-		Telefone telefone = new Telefone(null, numTelefone, null, null, statusTelefone);
-		ArrayList<Telefone> telefones = new ArrayList<>();
-		telefones.add(telefone);
+		usuarioService.cadastrar(usuario);
+	}
 
-		Endereco endereco = new Endereco(null, cep, logradouro, numero, complemento, bairro, cidade, estado, null,
-				statusTelefone);
-		ArrayList<Endereco> enderecos = new ArrayList<Endereco>();
-		enderecos.add(endereco);
+	// Cadastro de Endereço
+	// -------------------------------------------------------------------
 
-		//Usuario usuario = new Usuario(null, nome, login, senha, email, dataNasc, statusUsuario, pontos, telefones,
-		//		enderecos);
-		//UsuarioDaoJDBC usudao = new UsuarioDaoJDBC();
-		//usudao.cadastrar(usuario);
+	public void cadastrarEndereco(Usuario usuario) {
+		Scanner sc = new Scanner(System.in);
+
+		List<Endereco> enderecos = new ArrayList<>();
+
+		String aux = null;
+
+		boolean confirmar = true;
+
+		do {
+
+			System.out.println("Digite o seu Estado: ");
+			String estado = sc.nextLine();
+			System.out.println("Digite a sua Cidade: ");
+			String cidade = sc.nextLine();
+			System.out.println("Digite o seu Bairro: ");
+			String bairro = sc.nextLine();
+			System.out.println("Digite o seu Logradouro: ");
+			String logradouro = sc.nextLine();
+			System.out.println("Digite o seu Cep: ");
+			String cep = sc.nextLine();
+			System.out.println("Digite o seu Numero de Residencia: ");
+			int numero = sc.nextInt();
+			System.out.println("Digite o seu Complemento: ");
+			String complemento = sc.nextLine();
+			boolean statusEndereco = true;
+
+			Endereco endereco = new Endereco(null, cep, logradouro, numero, complemento, bairro, cidade, estado, null,
+					statusEndereco);
+
+			enderecos.add(endereco);
+
+			while (confirmar) {
+
+				System.out.println("Deseja cadastrar mais um endereco?:");
+				System.out.println("1 - SIM\n0 - NÃO\n:");
+				aux = sc.nextLine();
+
+				if (aux.equals("0")) {
+					confirmar = false;
+				} else if (aux.equals("1")) {
+					confirmar = false;
+				} else {
+					System.out.println("Digite uma opção valida");
+				}
+
+			}
+
+		} while (!aux.equals("0"));
+
+		for (Endereco endereco : enderecos) {
+			enderecoService.cadastrarEndUsuario(endereco, usuario);
+
+		}
+		usuario.setEnderecos(enderecos);
+		System.out.println("Endereços cadastrados com sucesso");
+
+	}
+
+	public void cadastrarTelefone(Usuario usuario) {
+
+		Scanner sc = new Scanner(System.in);
+		List<Telefone> telefones = new ArrayList<>();
+		boolean confirmar = true;
+		String aux = null;
+		do {
+
+			System.out.println("Digite o seu Telefone: ");
+			String numtelefone = sc.nextLine();
+			boolean statusTelefone = true;
+
+			Telefone telefone = new Telefone(null, numtelefone, null, usuario.getId(), statusTelefone);
+			telefones.add(telefone);
+
+			while (confirmar) {
+
+				System.out.println("Deseja cadastrar mais um telefone?:");
+				System.out.println("1 - SIM\n0 - NÃO\n:");
+				aux = sc.nextLine();
+
+				if (aux.equals("0")) {
+					confirmar = false;
+				} else if (aux.equals("1")) {
+					confirmar = false;
+				} else {
+					System.out.println("Digite uma opção valida");
+				}
+
+			}
+
+		} while (!aux.equals("0"));
+
+		for (Telefone telefone : telefones) {
+			telefoneService.cadastrar(telefone);
+		}
+		usuario.setTelefones(telefones);
+		System.out.println("Telefones cadastrados com sucesso");
 
 	}
 
 	// Metodo de Login de Usuario
 
-	public void LoginUsuario(String login, String senha) {
+	public void telaLoginUsuario() {
 		Scanner sc = new Scanner(System.in);
-		Usuario usu = new Usuario();
-		// if (login.equals(usu.getLogin()) && senha.equals(usu.getSenha())) {
-		if (login.equals("a") && senha.equals("a")) {
-			TelaUsuarioLogado();
+		String opc = null;
+		Usuario usuario = new Usuario();
+		
+		System.out.println("Digite seu login: ");
+		String login = sc.nextLine();
+		System.out.println("Digite sua senha: ");
+		String senha = sc.nextLine();
+
+		usuario.setLogin(login);
+		usuario.setSenha(senha);
+
+		Usuario usuarioRetorno = usuarioService.login(usuario);
+
+		if (Objects.nonNull(usuarioRetorno)) {
+			telaUsuarioLogado(usuarioRetorno);
+
 		} else {
-			String opc = "99";
 			System.out.println("Login ou Senha Incorretos.");
-			System.out.println("");
-			System.out.println("Deseja tentar de novo?");
-			System.out.println("1 - Sim");
-			System.out.println("2 - Não");
-			opc = sc.next();
-			if (opc.equals("1")) {
-				TelaLoginUsuario();
-			} else {
-				telaAplicacao.Menu();
-			}
 
+			do {
+				System.out.println("");
+				System.out.println("Deseja tentar de novo?");
+				System.out.println("1 - Sim");
+				System.out.println("2 - Não");
+				opc = sc.nextLine();
+				if (opc.equals("1")) {
+					telaLoginUsuario();
+
+				} else if (opc.equals("2")) {
+					telaAplicacao.Menu();
+				} else {
+					System.out.println("Digite uma opcão valida\n");
+				}
+
+			} while (!opc.equals("2"));
 		}
-	}
-
-	// Tela para Listar Usuarios
-	public void TelaListarUsuarios() {
-		System.out.println("Listando Usuarios:");
-		//UsuarioDaoJDBC us = new UsuarioDaoJDBC();
-		//us.listar();
-	}
-
-	// Tela para Editar Usuarios
-	public void TelaEditarUsuario() {
-		Scanner sc = new Scanner(System.in);
-		//UsuarioDaoJDBC us = new UsuarioDaoJDBC();
-		System.out.println("Digite o id que deseja alterar:");
-		//us.listar();
-		int id = sc.nextInt();
 
 	}
 
 	// Tela de desativar a conta do Usuario
-	public void TelaDesativarConta() {
-		//UsuarioDaoJDBC us = new UsuarioDaoJDBC();
+	public void TelaDesativarConta(Usuario usuario) {
 		Scanner sc = new Scanner(System.in);
-		/*
-		 * Simulando que ele tem que pegar o id do usuario que está logado atualmente.
-		 * Usuario usu = new Usuario(); //int id = usu.getId();
-		 */
+
 		// ---------------------------------------
 		System.out.println("Deseja mesmo excluir sua conta?");
 		System.out.println("1- Sim");
@@ -160,12 +233,12 @@ public class TelaUsuario {
 
 		switch (opc) {
 		case 1:
-			// us.deletar(id); Possivel metodo para excluir pegando o id do usuario logado.
+			usuarioService.deletar(usuario);
 			System.out.println("Conta excluida com sucesso.");
 			telaAplicacao.Menu();
 			break;
 		case 2:
-			TelaUsuarioLogado();
+			telaUsuarioLogado(usuario);
 			break;
 		default:
 			System.out.println("Digite uma opção valida.");
@@ -174,41 +247,22 @@ public class TelaUsuario {
 
 	}
 
-	// Tela de Login do Usuario
-	public void TelaLoginUsuario() {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Digite seu Login: ");
-		String login = sc.nextLine();
-		System.out.println("Digite sua Senha:");
-		String senha = sc.nextLine();
-		LoginUsuario(login, senha);
-	}
-
 	// Tela que o usuario vai favoritar a empresa
 	public void TelaFavoritarEmpresa() {
-		Scanner sc = new Scanner(System.in);
-
-		//telaAplicacao.ListarEmpresas();
-		System.out.println("Digite o ID da empresa que deseja favoritar");
-		int id = sc.nextInt();
-
-		//UsuarioDaoJDBC usuario = new UsuarioDaoJDBC();
-		// usuario.favoritar(id);
-		// Possivelmente um metodo que favorita pegando o id da empresa listada
+		
 
 	}
 
 	// Tela que o Usuario lista as empresas favoritas por ele
 	public void TelaListarEmpresasFavoritas() {
-	//	UsuarioDaoJDBC usuario = new UsuarioDaoJDBC();
-		// usuario.listarPontosFav();
+		
 	}
 
 	// Tela do Usuario quando estiver logado no sistema.
-	public void TelaUsuarioLogado() {
+	public void telaUsuarioLogado(Usuario usuario) {
 		Scanner sc = new Scanner(System.in);
 		TelaResiduo tr = new TelaResiduo();
-		
+
 		String opc = "99";
 
 		while (!opc.equals(7)) {
@@ -234,7 +288,7 @@ public class TelaUsuario {
 				TelaEditarUsuario();
 				break;
 			case "4":
-				TelaDesativarConta();
+				TelaDesativarConta(usuario);
 				break;
 			case "5":
 				TelaFavoritarEmpresa();
@@ -251,6 +305,11 @@ public class TelaUsuario {
 				break;
 			}
 		}
+
+	}
+
+	public void TelaEditarUsuario() {
+		// TODO Auto-generated method stub
 
 	}
 

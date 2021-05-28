@@ -46,10 +46,10 @@ public class TelaAplicacao {
 				TelaOpcaoLogin();
 				break;
 			case "2":
-				telaUsuario.CadastroUsuario();
+				telaUsuario.cadastroUsuario();
 				break;
 			case "3":
-				telaEmpresa.CadastroEmpresa();
+				telaEmpresa.cadastroEmpresa();
 				break;
 			case "4":
 				tr.CadastroResiduo();
@@ -76,7 +76,7 @@ public class TelaAplicacao {
 
 		switch (opc) {
 		case "1":
-			telaUsuario.TelaLoginUsuario();
+			telaUsuario.telaLoginUsuario();
 			break;
 		case "2":
 			telaEmpresa.telaLoginEmpresa();

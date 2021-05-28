@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-import model.dao.impl.EmpresaDaoJDBC;
+
 import model.entities.Empresa;
 import model.entities.Endereco;
-import model.entities.PontoFavorito;
+
 import model.entities.Residuo;
 import model.entities.Telefone;
 import model.services.EmpresaService;
@@ -30,8 +30,6 @@ public class TelaEmpresa {
 
 	private static TelaEmpresa telaEmpresa;
 
-	private static Empresa empresa;
-
 	private TelaEmpresa() {
 
 	}
@@ -45,7 +43,7 @@ public class TelaEmpresa {
 
 	}
 
-	public void CadastroEmpresa() {
+	public void cadastroEmpresa() {
 
 		// Cadastro de Empresa
 		// ------------------------------------------------------------------
@@ -115,7 +113,7 @@ public class TelaEmpresa {
 			System.out.println("6 - Resíduos Perigosos");
 			System.out.println("7 - Outros");
 			System.out.println("0 - Finalizar cadastrado e ir para o menu:");
-			opcResiduo = sc.next();
+			opcResiduo = sc.nextLine();
 
 			switch (opcResiduo) {
 
@@ -183,7 +181,9 @@ public class TelaEmpresa {
 	public void telaAdicionarEndereco(Empresa empresa) {
 		Scanner sc = new Scanner(System.in);
 
-		int aux = 0;
+		String aux = null;
+
+		boolean confirmar = true;
 
 		List<Endereco> enderecos = new ArrayList<>();
 
@@ -211,17 +211,32 @@ public class TelaEmpresa {
 
 			enderecos.add(endereco);
 
-			System.out.println("Deseja cadastrar mais um endereco?:");
-			System.out.println("1 - SIM\n0 - NÃO\n:");
-			aux = sc.nextInt();
-			sc.nextLine();
+			while (confirmar) {
 
-		} while (aux != 0);
+				System.out.println("Deseja cadastrar mais um endereco?:");
+				System.out.println("1 - SIM\n0 - NÃO\n:");
+				aux = sc.nextLine();
+				
+				if(aux.equals("0")) {
+					confirmar = false;
+				}else if(aux.equals("1")) {
+					confirmar = false;
+				}else {
+					System.out.println("Digite uma opção valida");
+				}
+
+			}
+
+		} while (!aux.equals("0"));
 
 		for (Endereco endereco : enderecos) {
 			enderecoService.cadastrarEndEmpresa(endereco, empresa);
 
 		}
+		
+		empresa.setEnderecos(enderecos);
+
+		System.out.println("Endereços cadastrados com sucesso");
 
 	}
 
@@ -245,11 +260,14 @@ public class TelaEmpresa {
 
 		} while (aux != 0);
 
-		empresa.setTelefones(telefones);
+		
 
 		for (Telefone telefone : telefones) {
 			telefoneService.cadastrar(telefone);
 		}
+		
+		empresa.setTelefones(telefones);
+		System.out.println("Telefones cadastrados com sucesso");
 
 	}
 
@@ -273,7 +291,7 @@ public class TelaEmpresa {
 	// Metodo de Login de Empresa
 	public void telaLoginEmpresa() {
 		Scanner sc = new Scanner(System.in);
-
+		String opc = null;
 		Empresa empresa = new Empresa();
 
 		System.out.println("Digite seu login: ");
@@ -286,21 +304,28 @@ public class TelaEmpresa {
 
 		Empresa empresaRetorno = empresaService.login(empresa);
 		if (Objects.nonNull(empresaRetorno)) {
-			telaEmpresaLogado(empresa);
+			telaEmpresaLogado(empresaRetorno);
 
 		} else {
 			System.out.println("Login ou Senha Incorretos.");
-			System.out.println("");
-			System.out.println("Deseja tentar de novo?");
-			System.out.println("1 - Sim");
-			System.out.println("2 - Não");
-			String opc = sc.next();
-			if (!opc.equals("1")) {
-				telaLoginEmpresa();
-			} else {
-				telaAplicacao.Menu();
-			}
+			do {
+				System.out.println("");
+				System.out.println("Deseja tentar de novo?");
+				System.out.println("1 - Sim");
+				System.out.println("2 - Não");
+				opc = sc.nextLine();
+				if (opc.equals("1")) {
+					telaLoginEmpresa();
+
+				} else if (opc.equals("2")) {
+					telaAplicacao.Menu();
+				} else {
+					System.out.println("Digite uma opcão valida\n");
+				}
+
+			} while (!opc.equals("2"));
 		}
+
 	}
 
 	// Tela de Editar Informações da Empresa
@@ -325,7 +350,7 @@ public class TelaEmpresa {
 					System.out.println("3 - Login");
 					System.out.println("4 - Senha");
 					System.out.println("0 - Concluir e voltar ao menu");
-					opc = sc.next();
+					opc = sc.nextLine();
 
 					switch (opc) {
 					case "1":
@@ -362,6 +387,7 @@ public class TelaEmpresa {
 
 				for (Endereco endereco : enderecos) {
 					System.out.println(i + " : " + endereco);
+					i++;
 				}
 
 				System.out.println("Escolha o endereco que quer alterar ");
@@ -480,25 +506,23 @@ public class TelaEmpresa {
 
 	}
 
-	public void TelaDesativarConta() {
+	public void telaDesativarConta(Empresa empresa) {
 		Scanner sc = new Scanner(System.in);
-		// EmpresaDaoJDBC empresadao = new EmpresaDaoJDBC();
-		String opc = sc.next();
+		String opc = null;
 		System.out.println("Deseja mesmo excluir sua conta?");
 		System.out.println("1- Sim");
 		System.out.println("2- Não");
-		opc = sc.next();
+		opc = sc.nextLine();
 
 		switch (opc) {
 		case "1":
-			// empresadao.deletar(id); Possivel metodo para excluir a propria conta pegando
-			// o id do usuario logado.
+			empresaService.deletar(empresa);
 			System.out.println("Conta excluida com sucesso.");
 			telaAplicacao.Menu();
 			break;
 		case "2":
 			telaLoginEmpresa();
-			;
+
 			break;
 		default:
 			System.out.println("Digite uma opção valida.");
@@ -517,14 +541,14 @@ public class TelaEmpresa {
 			System.out.println("1 - Editar Informações");
 			System.out.println("2 - Desativar Conta");
 			System.out.println("3 - Fazer Logoff");
-			opc = sc.next();
+			opc = sc.nextLine();
 
 			switch (opc) {
 			case "1":
 				telaEditarEmpresa(empresa);
 				break;
 			case "2":
-				TelaDesativarConta();
+				telaDesativarConta(empresa);
 				break;
 			case "3":
 				System.out.println("Fazendo Logoff");
