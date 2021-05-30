@@ -136,8 +136,8 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 		Usuario usuarioRetorno = null;
 
 		try {
-			st = connection.prepareStatement(
-					"SELECT * FROM USUARIO " + "WHERE USUARIO.login_usuario = ? AND USUARIO.senha_usuario = ? AND USUARIO.status = true");
+			st = connection.prepareStatement("SELECT * FROM USUARIO "
+					+ "WHERE USUARIO.login_usuario = ? AND USUARIO.senha_usuario = ? AND USUARIO.status = true");
 
 			st.setString(1, usuario.getLogin());
 			st.setString(2, usuario.getSenha());
@@ -151,6 +151,53 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			}
 
 			return usuarioRetorno;
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+
+	}
+
+	public boolean existeLogin(Usuario usuario) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+			st = connection.prepareStatement("SELECT * FROM USUARIO " + "WHERE UPPER(login_usuario) = ?;");
+
+			String loginProc = usuario.getLogin().toUpperCase();
+			st.setString(1, loginProc);
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+		}
+	}
+
+	public boolean existeEmail(Usuario usuario) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+			st = connection.prepareStatement("SELECT * FROM USUARIO " + "WHERE UPPER(email_usuario) = ?;");
+
+			String emailProc = usuario.getEmail().toUpperCase();
+
+			st.setString(1, emailProc);
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+				return true;
+			} else {
+				return false;
+			}
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}

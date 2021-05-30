@@ -12,6 +12,11 @@ public interface UsuarioDao {
 	void deletar(Usuario usuario);
 
 	Usuario login(Usuario usuario);
+	
+	boolean existeLogin(Usuario usuario);
+	
+	boolean existeEmail(Usuario usuario);
+
 
 
 

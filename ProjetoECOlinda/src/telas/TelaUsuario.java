@@ -16,6 +16,7 @@ import model.entities.PontoFavorito;
 import model.entities.Residuo;
 import model.entities.Telefone;
 import model.entities.Usuario;
+import model.exceptions.ValorInvalidoException;
 import model.services.EmpresaService;
 import model.services.EnderecoService;
 import model.services.PontoFavoritoService;
@@ -58,31 +59,41 @@ public class TelaUsuario {
 	// -----------------------------------------------------------------
 	public void cadastroUsuario() {
 		Scanner sc = new Scanner(System.in);
+		boolean confirmar = false;
 
-		Date dataNascimento = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		boolean statusUsuario = true;
-		System.out.println("Digite o seu nome: ");
-		String nome = sc.nextLine();
-		System.out.println("Digite o seu Email: ");
-		String email = sc.nextLine();
-		System.out.println("Digite o seu Login: ");
-		String login = sc.nextLine();
-		System.out.println("Digite a sua Senha: ");
-		String senha = sc.nextLine();
-		System.out.println("Digite a sua Data de Nascimento: dia/mes/ano ");
-		try {
-			dataNascimento = sdf.parse(sc.next());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while (!confirmar) {
+			try {
+				Date dataNascimento = null;
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				boolean statusUsuario = true;
+				
+				System.out.println("\nDigite o seu nome: ");
+				String nome = sc.nextLine();
+				System.out.println("Digite o seu Email: ");
+				String email = sc.nextLine();
+				System.out.println("Digite o seu Login: ");
+				String login = sc.nextLine();
+				System.out.println("Digite a sua Senha: ");
+				String senha = sc.nextLine();
+				System.out.println("Digite a sua Data de Nascimento: dia/mes/ano: ");
+				dataNascimento = sdf.parse(sc.nextLine());
+				
+
+				Usuario usuario = new Usuario(null, nome, login, senha, email, dataNascimento, statusUsuario, null,
+						null, null);
+
+				confirmar = usuarioService.cadastrar(usuario);
+				
+
+			} catch (ParseException e) {
+				System.err.println("ERRO: Data de nascimento inválida");;
+			} catch (ValorInvalidoException e) {
+				System.err.println("ERRO: "+ e.getMessage());
+			}
 		}
-
-		Usuario usuario = new Usuario(null, nome, login, senha, email, dataNascimento, null, null, null, null);
-
-		usuarioService.cadastrar(usuario);
-
+		
 		telaLoginUsuario();
+
 	}
 
 	// Cadastro de Endereço
@@ -603,7 +614,7 @@ public class TelaUsuario {
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
-				if (aux > telefones.size()-1 || aux < 0) {
+				if (aux > telefones.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 				} else {
 
@@ -705,7 +716,8 @@ public class TelaUsuario {
 		Scanner sc = new Scanner(System.in);
 		String opc = null;
 		Usuario usuario = new Usuario();
-
+		
+		System.out.println("\n======LOGIN======");
 		System.out.println("Digite seu login: ");
 		String login = sc.nextLine();
 		System.out.println("Digite sua senha: ");
