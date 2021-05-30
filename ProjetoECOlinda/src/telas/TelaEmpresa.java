@@ -169,7 +169,7 @@ public class TelaEmpresa {
 				telaAplicacao.Menu();
 				break;
 			default:
-				System.out.println("Digite uma opção valida.");
+				System.err.println("ERRO: Opção Inválida\n");
 				break;
 			}
 
@@ -221,7 +221,7 @@ public class TelaEmpresa {
 				} else if (aux.equals("1")) {
 					confirmar = false;
 				} else {
-					System.out.println("Digite uma opção valida");
+					System.err.println("ERRO: Opção Inválida\n");
 				}
 
 			}
@@ -268,60 +268,44 @@ public class TelaEmpresa {
 
 	}
 
-	// Tela e metodo para buscar empresa por nome
-	public void TelaBuscarEmpresaNome() {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Digite o nome da Empresa que deseja buscar: ");
-		String nome = sc.nextLine();
-		BuscarEmpresaNome(nome);
-	}
-
-	// Metodo de Buscar Empresa por Nome
-	public void BuscarEmpresaNome(String nomeEmpresa) {
-		EmpresaService empre = EmpresaService.getInstance();
-		Empresa empresa = new Empresa(null, nomeEmpresa, nomeEmpresa, nomeEmpresa, nomeEmpresa, null, null, null, null);
-
-		empre.procurar(empresa);
-
-	}
-
 	// Metodo de Login de Empresa
 	public void telaLoginEmpresa() {
 		Scanner sc = new Scanner(System.in);
 		String opc = "3";
 		Empresa empresa = new Empresa();
 
-		System.out.println("Digite seu login: ");
-		String login = sc.nextLine();
-		System.out.println("Digite sua senha: ");
-		String senha = sc.nextLine();
+		while (!opc.equals("2")) {
 
-		empresa.setLogin(login);
-		empresa.setSenha(senha);
+			System.out.println("Digite seu login: ");
+			String login = sc.nextLine();
+			System.out.println("Digite sua senha: ");
+			String senha = sc.nextLine();
 
-		Empresa empresaRetorno = empresaService.login(empresa);
-		if (Objects.nonNull(empresaRetorno)) {
-			telaEmpresaLogado(empresaRetorno);
+			empresa.setLogin(login);
+			empresa.setSenha(senha);
 
-		} else {
-			System.out.println("Login ou Senha Incorretos.");
+			Empresa empresaRetorno = empresaService.login(empresa);
+			if (Objects.nonNull(empresaRetorno)) {
+				telaEmpresaLogado(empresaRetorno);
 
-			while (!opc.equals("2")) {
+			} else {
+				System.out.println("Login ou Senha Incorretos.");
 
 				System.out.println("");
 				System.out.println("Deseja tentar de novo?");
 				System.out.println("1 - Sim");
 				System.out.println("2 - Não");
 				opc = sc.nextLine();
+				
 				if (opc.equals("1")) {
-					telaLoginEmpresa();
+					
 
 				} else if (opc.equals("2")) {
 					telaAplicacao.Menu();
 					break;
 
 				} else {
-					System.out.println("Digite uma opcão valida\n");
+					System.err.println("ERRO: Opção Inválida\n");
 				}
 
 			}
@@ -377,7 +361,7 @@ public class TelaEmpresa {
 						empresaService.alterar(empresa);
 						break;
 					default:
-						System.out.println("Digite uma opção valida");
+						System.err.println("ERRO: Opção Inválida\n");
 						break;
 					}
 				} while (!opc.equals("0"));
@@ -391,73 +375,84 @@ public class TelaEmpresa {
 					i++;
 				}
 
-				System.out.println("Escolha o endereco que quer alterar ");
+				System.out.println("Escolha o endereco que você quer alterar ");
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
-				Endereco enderecoEditar = enderecos.get(aux);
 
-				String opcEnd = null;
+				if (aux > enderecos.size() - 1 || aux < 0) {
+					System.err.println("ERRO: Opção Inválida\n");
 
-				do {
+				} else {
 
-					System.out.println("O que deseja alterar no endereco:");
-					System.out.println("1 - Estado");
-					System.out.println("2 - Cidade");
-					System.out.println("3 - Bairro");
-					System.out.println("4 - Logradouro");
-					System.out.println("5 - Cep");
-					System.out.println("6 - Numero de Residência");
-					System.out.println("7 - Complemento");
-					System.out.println("0 - Concluir e voltar ao menu");
-					opcEnd = sc.nextLine();
+					Endereco enderecoEditar = enderecos.get(aux);
 
-					switch (opcEnd) {
-					case "1":
-						System.out.println("Digite o seu novo Estado: ");
-						String novoEstado = sc.nextLine();
-						enderecoEditar.setBairro(novoEstado);
-						break;
-					case "2":
-						System.out.println("Digite a sua nova Cidade: ");
-						String novoCidade = sc.nextLine();
-						enderecoEditar.setCidade(novoCidade);
-						break;
-					case "3":
-						System.out.println("Digite o seu novo Bairro:");
-						String novoBairro = sc.nextLine();
-						enderecoEditar.setBairro(novoBairro);
+					String opcEnd = null;
 
-						break;
-					case "4":
-						System.out.println("Digite o seu novo Logradouro: ");
-						String novoLogradouro = sc.nextLine();
-						enderecoEditar.setLogradouro(novoLogradouro);
-						break;
-					case "5":
-						System.out.println("Digite o seu novo Cep: ");
-						String novoCep = sc.nextLine();
-						enderecoEditar.setCep(novoCep);
-						break;
-					case "6":
-						System.out.println("Digite o seu novo Numero de Residência");
-						Integer novoNumero = sc.nextInt();
-						enderecoEditar.setNumero(novoNumero);
-						break;
-					case "7":
-						System.out.println("Digite o seu novo complemento");
-						String novoComplemento = sc.nextLine();
-						enderecoEditar.setComplemento(novoComplemento);
-						break;
-					case "0":
-						enderecoService.alterar(enderecoEditar);
-						break;
-					default:
-						System.out.println("Digite uma opção valida.");
-						break;
-					}
+					do {
 
-				} while (!opcEnd.equals("0"));
+						System.out.println("O que deseja alterar no endereco:");
+						System.out.println("1 - Estado");
+						System.out.println("2 - Cidade");
+						System.out.println("3 - Bairro");
+						System.out.println("4 - Logradouro");
+						System.out.println("5 - Cep");
+						System.out.println("6 - Numero de Residência");
+						System.out.println("7 - Complemento");
+						System.out.println("8 - Deletar");
+						System.out.println("0 - Concluir e voltar ao menu");
+						opcEnd = sc.nextLine();
+
+						switch (opcEnd) {
+						case "1":
+							System.out.println("Digite o seu novo Estado: ");
+							String novoEstado = sc.nextLine();
+							enderecoEditar.setBairro(novoEstado);
+							break;
+						case "2":
+							System.out.println("Digite a sua nova Cidade: ");
+							String novoCidade = sc.nextLine();
+							enderecoEditar.setCidade(novoCidade);
+							break;
+						case "3":
+							System.out.println("Digite o seu novo Bairro:");
+							String novoBairro = sc.nextLine();
+							enderecoEditar.setBairro(novoBairro);
+
+							break;
+						case "4":
+							System.out.println("Digite o seu novo Logradouro: ");
+							String novoLogradouro = sc.nextLine();
+							enderecoEditar.setLogradouro(novoLogradouro);
+							break;
+						case "5":
+							System.out.println("Digite o seu novo Cep: ");
+							String novoCep = sc.nextLine();
+							enderecoEditar.setCep(novoCep);
+							break;
+						case "6":
+							System.out.println("Digite o seu novo Numero de Residência: ");
+							Integer novoNumero = sc.nextInt();
+							enderecoEditar.setNumero(novoNumero);
+							break;
+						case "7":
+							System.out.println("Digite o seu novo Complemento:");
+							String novoComplemento = sc.nextLine();
+							enderecoEditar.setComplemento(novoComplemento);
+							break;
+						case "8":
+							enderecoService.deletarEndEmpresa(enderecoEditar, empresa);
+							break;
+						case "0":
+							enderecoService.alterar(enderecoEditar);
+							break;
+						default:
+							System.err.println("ERRO: Opção Inválida\n");
+							break;
+						}
+
+					} while (!opcEnd.equals("0"));
+				}
 
 			} else if (opc.equals("3")) {
 				List<Telefone> telefones = telefoneService.procurarTelEmpresa(empresa);
@@ -465,39 +460,52 @@ public class TelaEmpresa {
 
 				for (Telefone telefone : telefones) {
 					System.out.println(i + " : " + telefone);
+					i++;
 				}
 
-				System.out.println("Escolha o telefone que quer alterar ");
+				System.out.println("Escolha o telefone que você quer alterar: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
-				Telefone telefoneEditar = telefones.get(aux);
 
-				String opcTel = null;
+				if (aux > telefones.size() - 1 || aux < 0) {
+					System.err.println("ERRO: Opção Inválida\n");
 
-				do {
-					System.out.println("O que deseja alterar de telefone: ");
-					System.out.println("1 - Número");
-					System.out.println("0 - Concluir e voltar ao menu");
-					opcTel = sc.nextLine();
+				} else {
 
-					switch (opcTel) {
-					case "1":
-						System.out.println("Digite o novo numero da Empresa:");
-						String novoNome = sc.nextLine();
-						telefoneEditar.setNumTelefone(novoNome);
-						break;
-					case "0":
-						telefoneService.alterar(telefoneEditar);
-						break;
+					Telefone telefoneEditar = telefones.get(aux);
 
-					default:
-						System.out.println("Digite uma opção valida.");
-						break;
+					String opcTel = null;
 
-					}
+					do {
+						System.out.println("O que deseja alterar de telefone: ");
+						System.out.println("1 - Número");
+						System.out.println("2 - Deletar");
+						System.out.println("0 - Concluir e voltar ao menu");
+						opcTel = sc.nextLine();
 
-				} while (!opcTel.equals("0"));
+						switch (opcTel) {
+						case "1":
+							System.out.println("Digite o novo numero da Empresa:");
+							String novoNome = sc.nextLine();
+							telefoneEditar.setNumTelefone(novoNome);
+							break;
+
+						case "2":
+							telefoneService.deletar(telefoneEditar);
+							break;
+						case "0":
+							telefoneService.alterar(telefoneEditar);
+							break;
+
+						default:
+							System.err.println("ERRO: Opção Inválida\n");
+							break;
+
+						}
+
+					} while (!opcTel.equals("0"));
+				}
 
 			} else if (opc.equals("0")) {
 				menu = false;
@@ -510,7 +518,10 @@ public class TelaEmpresa {
 
 	public void telaDesativarConta(Empresa empresa) {
 		Scanner sc = new Scanner(System.in);
-		String opc = null;
+		String opc = " ";
+		
+		while(!opc.equals("1") || !opc.equals("2")) {
+		
 		System.out.println("Deseja mesmo excluir sua conta?");
 		System.out.println("1- Sim");
 		System.out.println("2- Não");
@@ -526,8 +537,9 @@ public class TelaEmpresa {
 			telaLoginEmpresa();
 			break;
 		default:
-			System.out.println("Digite uma opção valida.");
+			System.err.println("ERRO: Opção Inválida\n");
 			break;
+		}
 		}
 	}
 
@@ -537,7 +549,7 @@ public class TelaEmpresa {
 		String opc = "99";
 
 		while (!opc.equals("3")) {
-			System.out.println("Bem vindo ao Sistema.");
+			System.out.println("Bem vindo ao Sistema " + empresa.getNome());
 			System.out.println("O que deseja fazer?");
 			System.out.println("1 - Editar Informações");
 			System.out.println("2 - Desativar Conta");
@@ -560,7 +572,7 @@ public class TelaEmpresa {
 				break;
 
 			} else {
-				System.out.println("Digite uma opção valida.");
+				System.err.println("ERRO: Opção Inválida\n");
 
 			}
 

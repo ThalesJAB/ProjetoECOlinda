@@ -81,7 +81,7 @@ public class TelaUsuario {
 		Usuario usuario = new Usuario(null, nome, login, senha, email, dataNascimento, null, null, null, null);
 
 		usuarioService.cadastrar(usuario);
-		
+
 		telaLoginUsuario();
 	}
 
@@ -131,7 +131,8 @@ public class TelaUsuario {
 				} else if (aux.equals("1")) {
 					confirmar = false;
 				} else {
-					System.out.println("Digite uma opção valida");
+					System.err.println("ERRO: Opção Inválida\n");
+
 				}
 
 			}
@@ -169,11 +170,17 @@ public class TelaUsuario {
 				aux = sc.nextLine();
 
 				if (aux.equals("0")) {
+
 					confirmar = false;
+
 				} else if (aux.equals("1")) {
+
 					confirmar = false;
+
 				} else {
-					System.out.println("Digite uma opção valida");
+
+					System.err.println("ERRO: Opção Inválida\n");
+
 				}
 
 			}
@@ -210,7 +217,8 @@ public class TelaUsuario {
 				telaUsuarioLogado(usuario);
 				break;
 			default:
-				System.out.println("Digite uma opção valida.");
+				System.err.println("ERRO: Opção Inválida\n");
+
 				break;
 			}
 
@@ -279,7 +287,8 @@ public class TelaUsuario {
 				break;
 
 			default:
-				System.out.println("Opção invalida");
+				System.err.println("ERRO: Opção Inválida\n");
+
 			}
 
 			for (Empresa empresa : empresas) {
@@ -288,13 +297,14 @@ public class TelaUsuario {
 			}
 			int aux = 0;
 
-			if (empresas.size() != 0) {
+			if (empresas.size() > 0) {
 				System.out.print("\nSelecione a empresa pela númeração para mais informações: ");
 				aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
-				if (aux > empresas.size()) {
-					System.out.println("Opção Inválida");
+				if (aux > empresas.size() - 1 || aux < 0) {
+					System.err.println("ERRO: Opção Inválida\n");
+
 				} else {
 					Empresa empresa = empresas.get(aux);
 					System.out.println("");
@@ -309,7 +319,6 @@ public class TelaUsuario {
 
 						if (opc1.equals("1")) {
 							telaFavoritarEmpresa(usuario, empresa);
-
 							break;
 
 						}
@@ -318,13 +327,14 @@ public class TelaUsuario {
 							telaUsuarioLogado(usuario);
 							break;
 						} else {
-							System.out.println("Digite uma opção valida");
+							System.err.println("ERRO: Opção Inválida\n");
+
 						}
 
 					} while (!opc1.equals("2") || !opc1.equals("1"));
 				}
 			} else {
-				System.out.println("Nenhuma empresa trabalha com esse tipo de resíduo\n");
+				System.err.println("Nenhuma empresa trabalha com esse tipo de resíduo\n");
 			}
 
 		} while (!opc.equals("0"));
@@ -341,7 +351,7 @@ public class TelaUsuario {
 		Empresa empresaRetorno = empresaService.procurar(empresa);
 
 		if (Objects.isNull(empresaRetorno)) {
-			System.out.println("Empresa procurada não existe");
+			System.err.println("Empresa procurada não existe");
 		} else {
 			empresaRetorno.setSenha(null);
 			empresaRetorno.setLogin(null);
@@ -365,7 +375,8 @@ public class TelaUsuario {
 					telaUsuarioLogado(usuario);
 					break;
 				} else {
-					System.out.println("Digite uma opção valida");
+					System.err.println("ERRO: Opção Inválida\n");
+
 				}
 
 			} while (!opc.equals("2") || !opc.equals("1"));
@@ -387,12 +398,12 @@ public class TelaUsuario {
 
 				pontoFavoritoService.cadastrarPontoFvUsuario(pontoFavoritoRetorno);
 			} else {
-				System.out.println(
+				System.err.println(
 						"Usuario ja cadastrou essa empresa como ponto favorito, não pode cadastrar novamente\n");
 			}
 
 		} else {
-			System.out.println("Empresa ainda não pode ser adicionada como ponto favorito\n");
+			System.err.println("Empresa ainda não pode ser adicionada como ponto favorito\n");
 
 		}
 	}
@@ -400,35 +411,42 @@ public class TelaUsuario {
 	// Tela que o Usuario lista as empresas favoritas por ele
 	public void telaListarEmpresasFavoritas(Usuario usuario) {
 		Scanner sc = new Scanner(System.in);
+		String opc = " ";
 		int i = 0, aux = 0;
 		List<PontoFavorito> pontosFavoritosUsuario = pontoFavoritoService.listarPontosFav(usuario);
 
 		if (pontosFavoritosUsuario.isEmpty()) {
-			System.out.println("O Usuario não possui pontos favoritos");
+			System.err.println("O Usuario não possui pontos favoritos");
 		} else {
 			pontosFavoritosUsuario.forEach(System.out::println);
-			System.out.println("Deseja deletar algum pontoFavorito ?");
-			System.out.println("1 - SIM");
-			System.out.println("2 - NÃO");
-			String opc = sc.nextLine();
 
-			if (opc.equals("1")) {
-				for (PontoFavorito pontoFavorito : pontosFavoritosUsuario) {
-					System.out.println(i + 1 + " - " + pontoFavorito);
-					i++;
+			while (!opc.equals("2") && !opc.equals("1")) {
+				System.out.println("Deseja deletar algum Ponto Favorito ?");
+				System.out.println("1 - SIM");
+				System.out.println("2 - NÃO");
+				opc = sc.nextLine();
+
+				if (opc.equals("1")) {
+					for (PontoFavorito pontoFavorito : pontosFavoritosUsuario) {
+						System.out.println(i + 1 + " - " + pontoFavorito);
+						i++;
+					}
+
+					System.out.println("\nDigite um que você queira deletar, a partir da numeração ao lado: ");
+					aux = sc.nextInt();
+					sc.nextLine();
+
+					aux = aux - 1;
+					PontoFavorito pontoFavoritoRet = pontosFavoritosUsuario.get(aux);
+
+					pontoFavoritoService.deletarPontoFvUsuario(pontoFavoritoRet);
+
+				} else if (opc.equals("2")) {
+					telaUsuarioLogado(usuario);
+				} else {
+					System.err.println("ERRO: Opção Inválida\n");
+
 				}
-
-				System.out.println("\nDigite um que você queira deletar, a partir da numeração ao lado: ");
-				aux = sc.nextInt();
-				sc.nextLine();
-
-				aux = aux - 1;
-				PontoFavorito pontoFavoritoRet = pontosFavoritosUsuario.get(aux);
-
-				pontoFavoritoService.deletarPontoFvUsuario(pontoFavoritoRet);
-
-			} else {
-				telaUsuarioLogado(usuario);
 			}
 		}
 
@@ -477,11 +495,12 @@ public class TelaUsuario {
 						System.out.println("Digite a nova senha da Usuario:");
 						String novaSenha = sc.nextLine();
 						usuario.setSenha(novaSenha);
+						break;
 					case "0":
 						usuarioService.alterar(usuario);
 						break;
 					default:
-						System.out.println("Digite uma opção valida");
+						System.err.println("ERRO: Opção Inválida\n");
 						break;
 					}
 				} while (!opc.equals("0"));
@@ -499,8 +518,8 @@ public class TelaUsuario {
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
-				if (aux > enderecos.size()) {
-					System.out.println("Opção inválida");
+				if (aux > enderecos.size() - 1 || aux < 0) {
+					System.err.println("ERRO: Opção Inválida\n");
 				} else {
 					Endereco enderecoEditar = enderecos.get(aux);
 
@@ -565,7 +584,7 @@ public class TelaUsuario {
 							enderecoService.alterar(enderecoEditar);
 							break;
 						default:
-							System.out.println("Digite uma opção valida.");
+							System.err.println("ERRO: Opção Inválida\n");
 							break;
 						}
 
@@ -584,8 +603,8 @@ public class TelaUsuario {
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
-				if (aux > telefones.size()) {
-					System.out.println("Opção inválida");
+				if (aux > telefones.size()-1 || aux < 0) {
+					System.err.println("ERRO: Opção Inválida\n");
 				} else {
 
 					Telefone telefoneEditar = telefones.get(aux);
@@ -617,7 +636,7 @@ public class TelaUsuario {
 							break;
 
 						default:
-							System.out.println("Digite uma opção valida.");
+							System.err.println("ERRO: Opção Inválida\n");
 							break;
 
 						}
@@ -673,7 +692,7 @@ public class TelaUsuario {
 				telaAplicacao.Menu();
 				break;
 			default:
-				System.out.println("Digite uma opção valida.");
+				System.err.println("ERRO: Opção Inválida\n");
 				break;
 			}
 		}
@@ -698,19 +717,19 @@ public class TelaUsuario {
 		Usuario usuarioRetorno = usuarioService.login(usuario);
 
 		if (Objects.nonNull(usuarioRetorno)) {
-			
+
 			List<Telefone> telefones = telefoneService.procurarTelUsuario(usuarioRetorno);
 			List<PontoFavorito> pontosFav = pontoFavoritoService.listarPontosFav(usuarioRetorno);
 			List<Endereco> enderecos = enderecoService.procurarEndUsuario(usuarioRetorno);
-			
+
 			usuarioRetorno.setTelefones(telefones);
 			usuarioRetorno.setPontosFav(pontosFav);
 			usuarioRetorno.setEnderecos(enderecos);
-			
+
 			telaUsuarioLogado(usuarioRetorno);
 
 		} else {
-			System.out.println("Login ou Senha Incorretos.");
+			System.err.println("Login ou Senha Incorretos.");
 
 			do {
 				System.out.println("");
@@ -726,7 +745,7 @@ public class TelaUsuario {
 					telaAplicacao.Menu();
 					break;
 				} else {
-					System.out.println("Digite uma opcão valida\n");
+					System.err.println("ERRO: Opção Inválida\n");
 
 				}
 

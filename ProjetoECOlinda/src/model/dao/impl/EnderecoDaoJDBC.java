@@ -202,7 +202,7 @@ public class EnderecoDaoJDBC implements EnderecoDao {
 			int linhasAf = st.executeUpdate();
 
 			if (linhasAf > 0) {
-				System.out.println("Linhas Afetadas: " + linhasAf);
+				System.out.println("Endereco deletado com sucesso");
 
 			} else {
 				throw new DbException("Erro inesperado! Nenhuma linha afetada!");
