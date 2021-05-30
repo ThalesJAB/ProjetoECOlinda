@@ -298,7 +298,7 @@ public class TelaEmpresa {
 				telaEmpresaLogado(empresaRetorno);
 
 			} else {
-				System.out.println("Login ou Senha Incorretos.");
+				System.err.println("Login ou Senha Incorretos.");
 
 				System.out.println("");
 				System.out.println("Deseja tentar de novo?");
@@ -332,6 +332,7 @@ public class TelaEmpresa {
 			System.out.println("1 - Dados da Empresa");
 			System.out.println("2 - Endereco da Empresa");
 			System.out.println("3 - Telefone");
+			System.out.println("4 - Residuo");
 			System.out.println("0 - Voltar ao menu login");
 			opc = sc.nextLine();
 
@@ -384,11 +385,16 @@ public class TelaEmpresa {
 				int i = 1;
 
 				for (Endereco endereco : enderecos) {
-					System.out.println(i + " : " + endereco);
+
+					System.out.println("OPÇÃO " + i + " - " + "========== ENDEREÇO ==========");
+					System.out.println("CEP: " + endereco.getCep() + ";\nLogradouro: " + endereco.getLogradouro()
+							+ ";\nNúmero " + endereco.getNumero() + ";\nComplemento: " + endereco.getComplemento()
+							+ ";\nBairro: " + endereco.getBairro() + ";\nCidade: " + endereco.getCidade()
+							+ ";\nEstado: " + endereco.getEstado());
 					i++;
 				}
-
-				System.out.println("Escolha o endereco que você quer alterar ");
+				System.out.println("===================================================================");
+				System.out.println("Escolha o endereco que você quer alterar, a partir da numeração ao lado: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
@@ -472,11 +478,14 @@ public class TelaEmpresa {
 				int i = 1;
 
 				for (Telefone telefone : telefones) {
-					System.out.println(i + " : " + telefone);
+					System.out.println("OPÇÃO " + i + " - " + "============ TELEFONE =========");
+					System.out.println(telefone.getNumTelefone());
 					i++;
 				}
 
-				System.out.println("Escolha o telefone que você quer alterar: ");
+				System.out.println("=======================================================================");
+
+				System.out.println("Escolha o telefone que você quer alterar, a partir da numeração ao lado: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
@@ -519,6 +528,56 @@ public class TelaEmpresa {
 
 					} while (!opcTel.equals("0"));
 				}
+
+			} else if (opc.equals("4")) {
+				List<Residuo> residuos = residuoService.residuosEmpresa(empresa);
+				int i = 1;
+
+				for (Residuo residuo : residuos) {
+					System.out.println("OPÇÃO " + i + " - " + "============ RESIDUO =========");
+					System.out.println(residuo.getTipoResiduo() + " - "+ residuo.getDescricaoResiduo());
+					i++;
+				}
+				
+				System.out.println("Escolha o residuo que você quer alterar, a partir da numeração ao lado: ");
+				int aux = sc.nextInt();
+				sc.nextLine();
+				aux = aux - 1;
+
+				if (aux > residuos.size() - 1 || aux < 0) {
+					System.err.println("ERRO: Opção Inválida\n");
+
+				}else {
+					Residuo residuoEditar = residuos.get(aux);
+					
+					String opcTel = null;
+
+					do {
+						System.out.println("O que deseja alterar de residuo: ");
+						System.out.println("1 - Excluir");
+						System.out.println("0 - Concluir e voltar ao menu");
+						opcTel = sc.nextLine();
+
+						switch (opcTel) {
+						case "1":
+							System.out.println("Residuo excluido de seu catálogo");
+							residuoService.deletar(residuoEditar, empresa);
+							break;
+							
+						case "0":
+							break;
+						default:
+							System.err.println("ERRO: Opção Inválida\n");
+							break;
+
+						}
+
+					} while (!opcTel.equals("0"));
+					
+					
+					
+				}
+				
 
 			} else if (opc.equals("0")) {
 				menu = false;
@@ -565,21 +624,27 @@ public class TelaEmpresa {
 			System.out.println("Bem vindo ao Sistema " + empresa.getNome());
 			System.out.println("O que deseja fazer?");
 			System.out.println("1 - Editar Informações");
-			System.out.println("2 - Desativar Conta");
-			System.out.println("3 - Fazer Logoff");
+			System.out.println("2 - Adicionar Resíduo ao Catálogo");
+			System.out.println("3 - Desativar Conta");
+			System.out.println("4 - Fazer Logoff");
 			opc = sc.nextLine();
 
 			if (opc.equals("1")) {
 				telaEditarEmpresa(empresa);
 				break;
 			}
-
-			else if (opc.equals("2")) {
-				telaDesativarConta(empresa);
+			
+			else if(opc.equals("2")) {
+				telaAdicionarResiduo(empresa);
 				break;
 			}
 
 			else if (opc.equals("3")) {
+				telaDesativarConta(empresa);
+				break;
+			}
+
+			else if (opc.equals("4")) {
 				System.out.println("Fazendo Logoff");
 				telaAplicacao.Menu();
 				break;

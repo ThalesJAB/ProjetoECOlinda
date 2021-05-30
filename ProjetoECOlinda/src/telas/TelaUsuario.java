@@ -302,7 +302,7 @@ public class TelaUsuario {
 			}
 
 			for (Empresa empresa : empresas) {
-				System.out.println(i + 1 + " - " + empresa);
+				System.out.println(i + 1 + " - " + empresa.getNome() + ", " + empresa.getEmail());
 				i++;
 			}
 			int aux = 0;
@@ -317,8 +317,20 @@ public class TelaUsuario {
 
 				} else {
 					Empresa empresa = empresas.get(aux);
-					System.out.println("");
-					System.out.println(empresa);
+					System.out.println("\n========== EMPRESA ==========");
+					System.out.println("Nome: " + empresa.getNome() + "\n" + "Email: " + empresa.getEmail() + "\n");
+					System.out.println("============ TELEFONE =========");
+					for (Telefone telefone : empresa.getTelefones()) {
+						System.out.println(telefone.getNumTelefone());
+					}
+
+					for (Endereco endereco : empresa.getEnderecos()) {
+						System.out.println("========== ENDEREÇO ==========");
+						System.out.println("CEP: " + endereco.getCep() + ";\nLogradouro: " + endereco.getLogradouro()
+								+ ";\nNúmero " + endereco.getNumero() + ";\nComplemento: " + endereco.getComplemento()
+								+ ";\nBairro: " + endereco.getBairro() + ";\nCidade: " + endereco.getCidade()
+								+ ";\nEstado: " + endereco.getEstado());
+					}
 
 					String opc1 = null;
 					do {
@@ -365,17 +377,31 @@ public class TelaUsuario {
 		} else {
 			empresaRetorno.setSenha(null);
 			empresaRetorno.setLogin(null);
-			System.out.println(empresaRetorno);
+			System.out.println("\n========== EMPRESA ==========");
+			System.out
+					.println("Nome: " + empresaRetorno.getNome() + "\n" + "Email: " + empresaRetorno.getEmail() + "\n");
+			System.out.println("============ TELEFONE =========");
+			for (Telefone telefone : empresaRetorno.getTelefones()) {
+				System.out.println(telefone.getNumTelefone());
+			}
+
+			for (Endereco endereco : empresaRetorno.getEnderecos()) {
+				System.out.println("========== ENDEREÇO ==========");
+				System.out.println("CEP: " + endereco.getCep() + ";\nLogradouro: " + endereco.getLogradouro()
+						+ ";\nNúmero " + endereco.getNumero() + ";\nComplemento: " + endereco.getComplemento()
+						+ ";\nBairro: " + endereco.getBairro() + ";\nCidade: " + endereco.getCidade() + ";\nEstado: "
+						+ endereco.getEstado());
+			}
 
 			String opc = null;
 			do {
-				System.out.println("Quer adicionar essa empresa como seu Ponto favorito");
+				System.out.println("\nQuer adicionar essa empresa como seu Ponto favorito");
 				System.out.println("1 - SIM");
 				System.out.println("2 - NÃO");
 				opc = sc.nextLine();
 
 				if (opc.equals("1")) {
-					telaFavoritarEmpresa(usuario, empresa);
+					telaFavoritarEmpresa(usuario, empresaRetorno);
 					telaUsuarioLogado(usuario);
 					break;
 
@@ -428,17 +454,43 @@ public class TelaUsuario {
 		if (pontosFavoritosUsuario.isEmpty()) {
 			System.err.println("O Usuario não possui pontos favoritos");
 		} else {
-			pontosFavoritosUsuario.forEach(System.out::println);
+			// pontosFavoritosUsuario.forEach(System.out::println);
+
+			for (PontoFavorito pontoFavorito : pontosFavoritosUsuario) {
+				System.out.println("\n========== EMPRESA ==========");
+				System.out.println("Nome: " + pontoFavorito.getEmpresa().getNome() + "\n" + "Email: " + pontoFavorito.getEmpresa().getEmail() + "\n");
+				System.out.println("============ TELEFONE =========");
+				
+				for (Telefone telefone : pontoFavorito.getEmpresa().getTelefones()) {
+					System.out.println(telefone.getNumTelefone());
+				}
+
+				for (Endereco endereco : pontoFavorito.getEmpresa().getEnderecos()) {
+					System.out.println("========== ENDEREÇO ==========");
+					System.out.println("CEP: " + endereco.getCep() + ";\nLogradouro: " + endereco.getLogradouro()
+							+ ";\nNúmero " + endereco.getNumero() + ";\nComplemento: " + endereco.getComplemento()
+							+ ";\nBairro: " + endereco.getBairro() + ";\nCidade: " + endereco.getCidade()
+							+ ";\nEstado: " + endereco.getEstado());
+				}
+				
+				System.out.println("========================================================================");
+				
+				
+			}
 
 			while (!opc.equals("2") && !opc.equals("1")) {
 				System.out.println("Deseja deletar algum Ponto Favorito ?");
 				System.out.println("1 - SIM");
 				System.out.println("2 - NÃO");
 				opc = sc.nextLine();
+				
+				i = 1;
 
 				if (opc.equals("1")) {
 					for (PontoFavorito pontoFavorito : pontosFavoritosUsuario) {
-						System.out.println(i + 1 + " - " + pontoFavorito);
+						System.out.println("Opção "+ i +" - ");
+						System.out.println("\n========== EMPRESA ==========");
+						System.out.println("Nome: " + pontoFavorito.getEmpresa().getNome() + "\n" + "Email: " + pontoFavorito.getEmpresa().getEmail() + "\n");
 						i++;
 					}
 
@@ -478,58 +530,60 @@ public class TelaUsuario {
 			if (opc.equals("1")) {
 				do {
 					try {
-					System.out.println("O que deseja alterar: ");
-					System.out.println("1 - Nome");
-					System.out.println("2 - Email");
-					System.out.println("3 - Login");
-					System.out.println("4 - Senha");
-					System.out.println("0 - Salvar alterações e voltar ao menu");
-					opc = sc.nextLine();
+						System.out.println("O que deseja alterar: ");
+						System.out.println("1 - Nome");
+						System.out.println("2 - Email");
+						System.out.println("3 - Login");
+						System.out.println("4 - Senha");
+						System.out.println("0 - Salvar alterações e voltar ao menu");
+						opc = sc.nextLine();
 
-					switch (opc) {
-					case "1":
-						System.out.println("Digite o novo nome do Usuario:");
-						String novoNome = sc.nextLine();
-						usuario.setNome(novoNome);
-						break;
-					case "2":
-						System.out.println("Digite o novo email do Usuario:");
-						String novoEmail = sc.nextLine();
-						usuario.setEmail(novoEmail);
-						break;
-					case "3":
-						System.out.println("Digite o novo Login do Usuario:");
-						String novoLogin = sc.nextLine();
-						usuario.setLogin(novoLogin);
-						break;
-					case "4":
-						System.out.println("Digite a nova senha da Usuario:");
-						String novaSenha = sc.nextLine();
-						usuario.setSenha(novaSenha);
-						break;
-					case "0":
-						usuarioService.alterar(usuario);
-						break;
-					default:
-						System.err.println("ERRO: Opção Inválida\n");
-						break;
-					}
-					
-					}catch(ValorInvalidoException e) {
-						System.err.println("ERRO: Alterações desfeitas, motivo: "+e.getMessage());
+						switch (opc) {
+						case "1":
+							System.out.println("Digite o novo nome do Usuario:");
+							String novoNome = sc.nextLine();
+							usuario.setNome(novoNome);
+							break;
+						case "2":
+							System.out.println("Digite o novo email do Usuario:");
+							String novoEmail = sc.nextLine();
+							usuario.setEmail(novoEmail);
+							break;
+						case "3":
+							System.out.println("Digite o novo Login do Usuario:");
+							String novoLogin = sc.nextLine();
+							usuario.setLogin(novoLogin);
+							break;
+						case "4":
+							System.out.println("Digite a nova senha da Usuario:");
+							String novaSenha = sc.nextLine();
+							usuario.setSenha(novaSenha);
+							break;
+						case "0":
+							usuarioService.alterar(usuario);
+							break;
+						default:
+							System.err.println("ERRO: Opção Inválida\n");
+							break;
+						}
+
+					} catch (ValorInvalidoException e) {
+						System.err.println("ERRO: Alterações desfeitas, motivo: " + e.getMessage());
 					}
 				} while (!opc.equals("0"));
-				
+
 			} else if (opc.equals("2")) {
 				List<Endereco> enderecos = enderecoService.procurarEndUsuario(usuario);
 				int i = 1;
 
-				for (Endereco endereco : enderecos) {
-					System.out.println(i + " - " + endereco);
+				for(Endereco endereco : enderecos) {
+					System.out.println("OPÇÃO "+i+" - "+"========== ENDEREÇO ==========");
+					System.out.println("CEP: "+ endereco.getCep() +";\nLogradouro: "+ endereco.getLogradouro() + ";\nNúmero "+endereco.getNumero()
+					+";\nComplemento: "+endereco.getComplemento()+";\nBairro: "+endereco.getBairro() + ";\nCidade: "+endereco.getCidade()+";\nEstado: "+endereco.getEstado());
 					i++;
 				}
-
-				System.out.println("Escolha o endereco que você quer alterar: ");
+				System.out.println("=========================================================");
+				System.out.println("\nEscolha o endereco que você quer alterar, a partir da numeração ao lado: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
@@ -609,12 +663,16 @@ public class TelaUsuario {
 				List<Telefone> telefones = telefoneService.procurarTelUsuario(usuario);
 				int i = 1;
 
-				for (Telefone telefone : telefones) {
-					System.out.println(i + " - " + telefone);
+				for(Telefone telefone : telefones) {
+					System.out.println("OPÇÃO "+i+" - "+"============ TELEFONE =========");
+
+					System.out.println(telefone.getNumTelefone());
 					i++;
 				}
+				
+				System.out.println("=======================================================================");
 
-				System.out.println("\nEscolha o telefone que você quer alterar, apartir da numeração:");
+				System.out.println("\nEscolha o telefone que você quer alterar, a partir da numeração:");
 				int aux = sc.nextInt();
 				sc.nextLine();
 				aux = aux - 1;
