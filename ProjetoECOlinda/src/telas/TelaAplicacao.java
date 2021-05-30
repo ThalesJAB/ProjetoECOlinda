@@ -63,7 +63,7 @@ public class TelaAplicacao {
 				
 				
 			}else {
-				System.out.println("Digite uma opção valida.");
+				System.err.println("Digite uma opção valida.");
 			}
 			
 
@@ -75,8 +75,8 @@ public class TelaAplicacao {
 		Scanner sc = new Scanner(System.in);
 		String opc = "99";
 		System.out.println("Você é um Usuario ou Empresa: ");
-		System.out.println("1- Usuario:");
-		System.out.println("2- Empresa:");
+		System.out.println("1 - Usuario:");
+		System.out.println("2 - Empresa:");
 		opc = sc.next();
 
 		switch (opc) {
@@ -87,7 +87,7 @@ public class TelaAplicacao {
 			telaEmpresa.telaLoginEmpresa();
 			break;
 		default:
-			System.out.println("Digite uma opção valida.");
+			System.err.println("Digite uma opção valida.");
 			break;
 		}
 	}
