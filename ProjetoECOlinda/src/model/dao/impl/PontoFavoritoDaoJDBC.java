@@ -151,6 +151,8 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 			DB.closeStatement(st);
 		}
 	}
+	
+	
 
 	@Override
 	public PontoFavorito procurarPontoFavorito(PontoFavorito pontoFavorito) {
@@ -160,17 +162,16 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 		try {
 			st = connection.prepareStatement("SELECT * FROM PONTO_FAVORITO " + "INNER JOIN EMPRESA "
 					+ "ON PONTO_FAVORITO.empresa_id_empresa = empresa.id_empresa "
-					+ "WHERE PONTO_FAVORITO.empresa_id_empresa = ? AND EMPRESA.status = true");
+					+ "WHERE PONTO_FAVORITO.empresa_id_empresa = ? AND EMPRESA.status = true AND PONTO_FAVORITO.status = true");
 
 			st.setInt(1, pontoFavorito.getEmpresa().getId());
 
 			rs = st.executeQuery();
 
 			if (rs.next()) {
-				PontoFavorito pontoFav = new PontoFavorito();
 				int id = rs.getInt(1);
-				pontoFav.setId(id);
-				return pontoFav;
+				pontoFavorito.setId(id);
+				return pontoFavorito;
 
 			} else {
 
@@ -184,6 +185,38 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 			DB.closeStatement(st);
 		}
 	}
+	
+	public boolean procurarPontoFavoritoUsu(PontoFavorito pontoFavorito) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			st = connection.prepareStatement("SELECT * FROM USUARIO "
+					+ "INNER JOIN USUARIO_PONTO_FAVORITO "
+					+ "ON USUARIO.id_usuario = USUARIO_PONTO_FAVORITO.usuario_id_usuario "
+					+ "INNER JOIN PONTO_FAVORITO "
+					+ "ON PONTO_FAVORITO.id_ponto_favorito = USUARIO_PONTO_FAVORITO.ponto_favorito_id_ponto_favorito "
+					+ "INNER JOIN EMPRESA "
+					+ "ON PONTO_FAVORITO.empresa_id_empresa = EMPRESA.id_empresa "
+					+ "WHERE USUARIO.id_usuario = ? AND EMPRESA.id_empresa = ? AND PONTO_FAVORITO.status = true AND USUARIO_PONTO_FAVORITO.status = true ");
+			
+			st.setInt(1, pontoFavorito.getIdUsuario());
+			st.setInt(2, pontoFavorito.getEmpresa().getId());
+	
+			
+			rs = st.executeQuery();
+			
+			if(rs.next()) {
+				return true;
+			}else {
+				return false;
+			}
+			
+			
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+	};
 
 	@Override
 	public List<PontoFavorito> listarPontosFav(Usuario usuario) {
@@ -200,7 +233,7 @@ public class PontoFavoritoDaoJDBC implements PontoFavoritoDao {
 					+ "INNER JOIN PONTO_FAVORITO "
 					+ "ON PONTO_FAVORITO.id_ponto_favorito = USUARIO_PONTO_FAVORITO.ponto_favorito_id_ponto_favorito "
 					+ "INNER JOIN EMPRESA " + "ON EMPRESA.id_empresa = PONTO_FAVORITO.empresa_id_empresa "
-					+ "WHERE USUARIO.id_usuario = ? AND USUARIO_PONTO_FAVORITO.status = true AND PONTO_FAVORITO.status = true;");
+					+ "WHERE USUARIO.id_usuario = ? AND USUARIO_PONTO_FAVORITO.status = true AND PONTO_FAVORITO.status = true AND USUARIO.status = true;");
 
 			st.setInt(1, usuario.getId());
 

@@ -29,39 +29,44 @@ public class TelaAplicacao {
 
 	// Metodo do Menu Inicial.
 	public void Menu() {
-		TelaResiduo tr = new TelaResiduo();
 		Scanner sc = new Scanner(System.in);
-		String opc = "99";
-		while (!opc.equals("0")) {
+		String opc = new String();
+		boolean confirmar = true;
+		
+		while(confirmar) {
 			System.out.println("--------- Menu --------");
-			System.out.println("1- Fazer Login");
-			System.out.println("2- Cadastrar Usuario");
-			System.out.println("3- Cadastrar Empresa");
-			System.out.println("4- Cadastrar Residuo");
+			System.out.println("1 - Fazer Login");
+			System.out.println("2 - Cadastrar Usuario");
+			System.out.println("3 - Cadastrar Empresa");
 			System.out.println("0 - Sair");
-			opc = sc.next();
+			opc = sc.nextLine();
 
-			switch (opc) {
-			case "1":
+			if(opc.equals("1")) {
 				TelaOpcaoLogin();
-				break;
-			case "2":
-				telaUsuario.cadastroUsuario();
-				break;
-			case "3":
-				telaEmpresa.cadastroEmpresa();
-				break;
-			case "4":
-				tr.CadastroResiduo();
-				break;
-			case "0":
-				System.out.println("Fim do Programa.");
-				DB.closeConnection();
-				break;
-			default:
-				System.out.println("Digite uma opção valida.");
-				break;
+				confirmar = false;
 			}
+			
+			else if(opc.equals("2")) {
+				telaUsuario.cadastroUsuario();
+				confirmar = false;
+			}
+			
+			else if(opc.equals("3")) {
+				telaEmpresa.cadastroEmpresa();
+				confirmar = false;
+				
+			}else if(opc.equals("0")) {
+				confirmar = false;
+				DB.closeConnection();
+				System.out.println("Fim do Programa.");
+				System.exit(0);
+				
+				
+			}else {
+				System.out.println("Digite uma opção valida.");
+			}
+			
+
 		}
 	}
 

@@ -82,8 +82,8 @@ public class PontoFavorito implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PontoFavorito [id=" + id + ", idUsuario=" + idUsuario +  ", status=" + status
+		return "PontoFavorito [id=" + id + ", idUsuario=" + idUsuario + ", empresa=" + empresa + ", status=" + status
 				+ "]";
 	}
-
 }
+

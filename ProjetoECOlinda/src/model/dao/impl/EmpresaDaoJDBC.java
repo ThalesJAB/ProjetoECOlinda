@@ -31,32 +31,32 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 	public void cadastrar(Empresa empresa) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		
+
 		try {
-			st = connection.prepareStatement("INSERT INTO EMPRESA(nome_empresa, email_empresa, login_empresa, senha_empresa, status) VALUES\r\n"
-											+ "(?, ?, ?, ?, true)", Statement.RETURN_GENERATED_KEYS);
-			
+			st = connection.prepareStatement(
+					"INSERT INTO EMPRESA(nome_empresa, email_empresa, login_empresa, senha_empresa, status) VALUES\r\n"
+							+ "(?, ?, ?, ?, true)",
+					Statement.RETURN_GENERATED_KEYS);
+
 			st.setString(1, empresa.getNome());
 			st.setString(2, empresa.getEmail());
 
 			st.setString(3, empresa.getLogin());
 
 			st.setString(4, empresa.getSenha());
-			
-			
+
 			int linhasAf = st.executeUpdate();
-			
-			if(linhasAf > 0) {
+
+			if (linhasAf > 0) {
 				rs = st.getGeneratedKeys();
-				
-				if(rs.next()) {
+
+				if (rs.next()) {
 					int id = rs.getInt(1);
 					empresa.setId(id);
 					System.out.println("Empresa cadastrada com sucesso");
 				}
 			}
 
-			
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
@@ -74,14 +74,13 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 					+ "	login_empresa = ?, " + "	senha_empresa = ? "
 
 					+ "WHERE id_empresa = ?");
-			
-			
+
 			st.setString(1, empresa.getNome());
 			st.setString(2, empresa.getEmail());
 			st.setString(3, empresa.getLogin());
 			st.setString(4, empresa.getSenha());
 			st.setInt(5, empresa.getId());
-			
+
 			int linhasAf = st.executeUpdate();
 
 			if (linhasAf > 0) {
@@ -126,10 +125,10 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 			st2.execute();
 			st3.execute();
 			st4.execute();
-			
-			if(linhasAf > 0) {
+
+			if (linhasAf > 0) {
 				System.out.println("Empresa deletada com sucesso");
-			}else {
+			} else {
 				throw new DbException("Empresa não foi deletada");
 			}
 
@@ -228,49 +227,31 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 		}
 
 	}
-	
+
 	@Override
 	public Empresa login(Empresa empresa) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		Empresa empresaRetorno = null;
-		
-		
+
 		try {
-			st = connection.prepareStatement("SELECT  "
-					+ "	EMPRESA.*, "
-					+ "	TELEFONE.id_telefone, "
-					+ "	TELEFONE.telefone, "
-					+ "	TELEFONE.empresa_id_empresa, "
-					+ "	ENDERECO.id_endereco, "
-					+ "	ENDERECO.cep, "
-					+ "	ENDERECO.logradouro, "
-					+ "	ENDERECO.numero, "
-					+ "	ENDERECO.complemento, "
-					+ "	ENDERECO.bairro, "
-					+ "	ENDERECO.cidade,  "
-					+ "	ENDERECO.estado, "
-					+ "	ENDERECO.empresa_id_empresa, "
-					+ "	RESIDUO.id_residuo, "
-					+ "	RESIDUO.tipo_residuo, "
-					+ "	RESIDUO.descricao_residuo "
-					+ "FROM EMPRESA "
-					+ "INNER JOIN TELEFONE "
-					+ "ON EMPRESA.id_empresa = TELEFONE.empresa_id_empresa "
-					+ "INNER JOIN ENDERECO "
-					+ "ON EMPRESA.id_empresa = ENDERECO.empresa_id_empresa "
-					+ "INNER JOIN RESIDUO_EMPRESA "
-					+ "ON EMPRESA.id_empresa = RESIDUO_EMPRESA.empresa_id_empresa "
-					+ "INNER JOIN RESIDUO "
+			st = connection.prepareStatement("SELECT  " + "	EMPRESA.*, " + "	TELEFONE.id_telefone, "
+					+ "	TELEFONE.telefone, " + "	TELEFONE.empresa_id_empresa, " + "	ENDERECO.id_endereco, "
+					+ "	ENDERECO.cep, " + "	ENDERECO.logradouro, " + "	ENDERECO.numero, " + "	ENDERECO.complemento, "
+					+ "	ENDERECO.bairro, " + "	ENDERECO.cidade,  " + "	ENDERECO.estado, "
+					+ "	ENDERECO.empresa_id_empresa, " + "	RESIDUO.id_residuo, " + "	RESIDUO.tipo_residuo, "
+					+ "	RESIDUO.descricao_residuo " + "FROM EMPRESA " + "INNER JOIN TELEFONE "
+					+ "ON EMPRESA.id_empresa = TELEFONE.empresa_id_empresa " + "INNER JOIN ENDERECO "
+					+ "ON EMPRESA.id_empresa = ENDERECO.empresa_id_empresa " + "INNER JOIN RESIDUO_EMPRESA "
+					+ "ON EMPRESA.id_empresa = RESIDUO_EMPRESA.empresa_id_empresa " + "INNER JOIN RESIDUO "
 					+ "ON RESIDUO_EMPRESA.residuo_id_residuo = RESIDUO.id_residuo "
 					+ "WHERE EMPRESA.login_empresa = ? AND EMPRESA.senha_empresa = ? AND EMPRESA.status = true AND TELEFONE.status = true AND ENDERECO.status = true AND RESIDUO_EMPRESA.status = true;");
-			
+
 			st.setString(1, empresa.getLogin());
 			st.setString(2, empresa.getSenha());
-			
+
 			rs = st.executeQuery();
-			
-			
+
 			Map<Integer, Telefone> telefoneMap = new HashMap<>();
 			Map<Integer, Residuo> residuoMap = new HashMap<>();
 			Map<Integer, Endereco> enderecoMap = new HashMap<>();
@@ -319,22 +300,97 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 				empresaRetorno = empresaAnalise;
 
 			}
-			
 
 			return empresaRetorno;
-			
-			
+
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}finally {
+		} finally {
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
-		
+
 	}
-	
-	
-	
+
+	@Override
+	public List<Empresa> listarEmpresaResiduo(Residuo residuo) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+			st = connection.prepareStatement(
+					"SELECT EMPRESA.id_empresa, EMPRESA.nome_empresa, EMPRESA.email_empresa, TELEFONE.*, RESIDUO.*, ENDERECO.* FROM RESIDUO "
+							+ "INNER JOIN RESIDUO_EMPRESA "
+							+ "ON RESIDUO_EMPRESA.residuo_id_residuo = RESIDUO.id_residuo " + "INNER JOIN EMPRESA "
+							+ "ON EMPRESA.id_empresa = RESIDUO_EMPRESA.empresa_id_empresa " + "INNER JOIN TELEFONE "
+							+ "ON TELEFONE.empresa_id_empresa = EMPRESA.id_empresa " + "INNER JOIN ENDERECO "
+							+ "ON ENDERECO.empresa_id_empresa = EMPRESA.id_empresa "
+							+ "WHERE RESIDUO.tipo_residuo = ? and RESIDUO_EMPRESA.status = true  and EMPRESA.status = true AND TELEFONE.status = true AND ENDERECO.status = true "
+							+ "AND RESIDUO_EMPRESA.status = true");
+
+			st.setString(1, residuo.getTipoResiduo());
+			rs = st.executeQuery();
+
+			List<Empresa> empresas = new ArrayList<>();
+
+			Map<Integer, Telefone> telefoneMap = new HashMap<>();
+			Map<Integer, Residuo> residuoMap = new HashMap<>();
+			Map<Integer, Endereco> enderecoMap = new HashMap<>();
+			Map<Integer, Empresa> empresaMap = new HashMap<>();
+
+			while (rs.next()) {
+				Telefone telefone = telefoneMap.get(rs.getInt("id_telefone"));
+				Residuo residuo1 = residuoMap.get(rs.getInt("id_residuo"));
+				Endereco endereco = enderecoMap.get(rs.getInt("id_endereco"));
+				Empresa empresa = empresaMap.get(rs.getInt("id_empresa"));
+
+				if (Objects.isNull(telefone)) {
+					telefone = instanciarTelefone(rs);
+					telefoneMap.put(rs.getInt("id_telefone"), telefone);
+
+				}
+
+				if (Objects.isNull(residuo1)) {
+					residuo1 = instanciarResiduo(rs);
+					residuoMap.put(rs.getInt("id_residuo"), residuo1);
+				}
+
+				if (Objects.isNull(endereco)) {
+					endereco = instanciarEndereco(rs);
+					enderecoMap.put(rs.getInt("id_endereco"), endereco);
+				}
+
+				if (Objects.isNull(empresa)) {
+					empresa = instanciarEmpresaEsp(rs);
+					empresaMap.put(rs.getInt("id_empresa"), empresa);
+				}
+
+				if (!empresa.getTelefones().contains(telefone)) {
+					empresa.addTelefone(telefone);
+
+				}
+
+				if (!empresa.getEnderecos().contains(endereco)) {
+					empresa.addEndereco(endereco);
+				}
+
+				if (!empresa.getResiduos().contains(residuo1)) {
+					empresa.addResiduo(residuo1);
+				}
+
+				if (!empresas.contains(empresa)) {
+					empresas.add(empresa);
+				}
+
+			}
+
+			return empresas;
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+
+	}
 
 	@Override
 	public List<Empresa> listarEmpresas() {
@@ -469,6 +525,15 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 
 	}
 
-	
+	public Empresa instanciarEmpresaEsp(ResultSet rs) throws SQLException {
+		Empresa empresa = new Empresa();
+		empresa.setId(rs.getInt("id_empresa"));
+		empresa.setNome(rs.getString("nome_empresa"));
+		empresa.setEmail(rs.getString("email_empresa"));
+		empresa.setStatus(true);
+
+		return empresa;
+
+	}
 
 }

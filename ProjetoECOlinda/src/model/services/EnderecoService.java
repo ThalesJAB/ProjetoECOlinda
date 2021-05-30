@@ -46,7 +46,7 @@ public class EnderecoService {
 	}
 
 	public void deletarEndUsuario(Endereco endereco, Usuario usuario) {
-		enderecoDao.cadastrarEndUsuario(endereco, usuario);
+		enderecoDao.deletarEndUsuario(endereco, usuario);
 	}
 
 	public List<Endereco> procurarEndEmpresa(Empresa empresa) {

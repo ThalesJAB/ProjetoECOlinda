@@ -101,10 +101,10 @@ public class TelefoneDaoJDBC implements TelefoneDao {
 			int linhasAf = st.executeUpdate();
 
 			if (linhasAf > 0) {
-				System.out.println("Linhas Afetadas: " + linhasAf);
+				System.out.println("Número alterado com sucesso");
 
 			} else {
-				throw new DbException("Erro inesperado! Nenhuma linha afetada!");
+				throw new DbException("Número não foi alterado!");
 
 			}
 
@@ -129,7 +129,7 @@ public class TelefoneDaoJDBC implements TelefoneDao {
 			int linhasAf = st.executeUpdate();
 
 			if (linhasAf > 0) {
-				System.out.println("Linhas Afetadas: " + linhasAf);
+				System.out.println("Número deletado");
 
 			} else {
 				throw new DbException("Erro inesperado! Nenhuma linha afetada!");

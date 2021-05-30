@@ -47,6 +47,10 @@ public class PontoFavoritoService {
 	public PontoFavorito procurarPontoFavorito(PontoFavorito pontoFavorito) {
 		return pontoFavoritoDao.procurarPontoFavorito(pontoFavorito);
 	}
+	
+	public boolean procurarPontoFavoritoUsu(PontoFavorito pontoFavorito) {
+		return pontoFavoritoDao.procurarPontoFavoritoUsu(pontoFavorito);
+	}
 
 	public List<PontoFavorito> listarPontosFav(Usuario usuario) {
 		return pontoFavoritoDao.listarPontosFav(usuario);

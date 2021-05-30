@@ -6,6 +6,7 @@ import java.util.Objects;
 import model.dao.DaoFactory;
 import model.dao.EmpresaDao;
 import model.entities.Empresa;
+import model.entities.Residuo;
 
 public class EmpresaService {
 
@@ -45,6 +46,11 @@ public class EmpresaService {
 
 	public Empresa login(Empresa empresa) {
 		return empresaDao.login(empresa);
+	}
+	
+	public List<Empresa> listarEmpresaResiduo(Residuo residuo){
+		return empresaDao.listarEmpresaResiduo(residuo);
+		
 	}
 
 	public List<Empresa> listarEmpresas() {

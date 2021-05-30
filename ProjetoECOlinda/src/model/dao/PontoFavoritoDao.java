@@ -16,6 +16,8 @@ public interface PontoFavoritoDao {
 	void deletarPontoFvUsuario(PontoFavorito pontoFavorito);
 	
 	PontoFavorito procurarPontoFavorito(PontoFavorito pontoFavorito);
+	
+	boolean procurarPontoFavoritoUsu(PontoFavorito pontoFavorito);
 
 	List<PontoFavorito> listarPontosFav(Usuario usuario);
 

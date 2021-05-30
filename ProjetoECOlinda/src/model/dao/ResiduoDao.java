@@ -18,7 +18,7 @@ public interface ResiduoDao {
 	Residuo procurar(Residuo residuo);
 	
 	List<Residuo> residuosEmpresa(Empresa empresa);
-
+	
 	List<Residuo> listar();
 
 }

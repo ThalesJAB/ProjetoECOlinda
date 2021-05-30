@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-
 import model.entities.Empresa;
 import model.entities.Endereco;
 
@@ -216,12 +215,12 @@ public class TelaEmpresa {
 				System.out.println("Deseja cadastrar mais um endereco?:");
 				System.out.println("1 - SIM\n0 - NÃO\n:");
 				aux = sc.nextLine();
-				
-				if(aux.equals("0")) {
+
+				if (aux.equals("0")) {
 					confirmar = false;
-				}else if(aux.equals("1")) {
+				} else if (aux.equals("1")) {
 					confirmar = false;
-				}else {
+				} else {
 					System.out.println("Digite uma opção valida");
 				}
 
@@ -233,7 +232,7 @@ public class TelaEmpresa {
 			enderecoService.cadastrarEndEmpresa(endereco, empresa);
 
 		}
-		
+
 		empresa.setEnderecos(enderecos);
 
 		System.out.println("Endereços cadastrados com sucesso");
@@ -260,12 +259,10 @@ public class TelaEmpresa {
 
 		} while (aux != 0);
 
-		
-
 		for (Telefone telefone : telefones) {
 			telefoneService.cadastrar(telefone);
 		}
-		
+
 		empresa.setTelefones(telefones);
 		System.out.println("Telefones cadastrados com sucesso");
 
@@ -291,7 +288,7 @@ public class TelaEmpresa {
 	// Metodo de Login de Empresa
 	public void telaLoginEmpresa() {
 		Scanner sc = new Scanner(System.in);
-		String opc = null;
+		String opc = "3";
 		Empresa empresa = new Empresa();
 
 		System.out.println("Digite seu login: ");
@@ -308,7 +305,9 @@ public class TelaEmpresa {
 
 		} else {
 			System.out.println("Login ou Senha Incorretos.");
-			do {
+
+			while (!opc.equals("2")) {
+
 				System.out.println("");
 				System.out.println("Deseja tentar de novo?");
 				System.out.println("1 - Sim");
@@ -319,11 +318,13 @@ public class TelaEmpresa {
 
 				} else if (opc.equals("2")) {
 					telaAplicacao.Menu();
+					break;
+
 				} else {
 					System.out.println("Digite uma opcão valida\n");
 				}
 
-			} while (!opc.equals("2"));
+			}
 		}
 
 	}
@@ -364,12 +365,12 @@ public class TelaEmpresa {
 						empresa.setEmail(novoEmail);
 						break;
 					case "3":
-						System.out.println("Digite o novo Login da Empresa:");
+						System.out.println("Digite o novo login da Empresa:");
 						String novoLogin = sc.nextLine();
 						empresa.setLogin(novoLogin);
 						break;
 					case "4":
-						System.out.println("Digite a nova Senha da Empresa:");
+						System.out.println("Digite a nova senha da Empresa:");
 						String novaSenha = sc.nextLine();
 						empresa.setSenha(novaSenha);
 					case "0":
@@ -501,6 +502,7 @@ public class TelaEmpresa {
 			} else if (opc.equals("0")) {
 				menu = false;
 				telaEmpresaLogado(empresa);
+				break;
 			}
 		}
 
@@ -522,7 +524,6 @@ public class TelaEmpresa {
 			break;
 		case "2":
 			telaLoginEmpresa();
-
 			break;
 		default:
 			System.out.println("Digite uma opção valida.");
@@ -543,22 +544,27 @@ public class TelaEmpresa {
 			System.out.println("3 - Fazer Logoff");
 			opc = sc.nextLine();
 
-			switch (opc) {
-			case "1":
+			if (opc.equals("1")) {
 				telaEditarEmpresa(empresa);
 				break;
-			case "2":
+			}
+
+			else if (opc.equals("2")) {
 				telaDesativarConta(empresa);
 				break;
-			case "3":
+			}
+
+			else if (opc.equals("3")) {
 				System.out.println("Fazendo Logoff");
 				telaAplicacao.Menu();
 				break;
-			default:
-				System.out.println("Digite uma opção valida.");
-				break;
-			}
-		}
-	}
 
+			} else {
+				System.out.println("Digite uma opção valida.");
+
+			}
+
+		}
+
+	}
 }
