@@ -10,6 +10,7 @@ import model.entities.Endereco;
 
 import model.entities.Residuo;
 import model.entities.Telefone;
+import model.exceptions.ValorInvalidoException;
 import model.services.EmpresaService;
 import model.services.EnderecoService;
 import model.services.ResiduoService;
@@ -48,33 +49,41 @@ public class TelaEmpresa {
 		// ------------------------------------------------------------------
 
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Digite o Nome da Empresa: ");
-		String nome = sc.nextLine();
-		System.out.println("Digite o Email da Empresa: ");
-		String email = sc.nextLine();
-		System.out.println("Digite o Login da Empresa: ");
-		String login = sc.nextLine();
-		System.out.println("Digite a Senha da Empresa: ");
-		String senha = sc.nextLine();
-		boolean statusEmpresa = true;
+		boolean confirmar = false;
 
-		Empresa empresa = new Empresa(null, nome, login, senha, email, statusEmpresa, null, null, null);
+		while (!confirmar) {
 
-		empresaService.cadastrar(empresa);
+			try {
+				System.out.println("Digite o Nome da Empresa: ");
+				String nome = sc.nextLine();
+				System.out.println("Digite o Email da Empresa: ");
+				String email = sc.nextLine();
+				System.out.println("Digite o Login da Empresa: ");
+				String login = sc.nextLine();
+				System.out.println("Digite a Senha da Empresa: ");
+				String senha = sc.nextLine();
+				boolean statusEmpresa = true;
 
-		// Cadastro de Endereço
-		// -------------------------------------------------------------------
-		telaAdicionarEndereco(empresa);
+				Empresa empresa = new Empresa(null, nome, login, senha, email, statusEmpresa, null, null, null);
 
-		// Cadastro de Telefone
-		// --------------------------------------------------------------------
+				confirmar = empresaService.cadastrar(empresa);
 
-		telaAdicionarTelefone(empresa);
+				// Cadastro de Endereço
+				// -------------------------------------------------------------------
+				telaAdicionarEndereco(empresa);
 
-		// Cadastro de Residuo Empresa
-		// --------------------------------
-		telaAdicionarResiduo(empresa);
+				// Cadastro de Telefone
+				// --------------------------------------------------------------------
 
+				telaAdicionarTelefone(empresa);
+
+				// Cadastro de Residuo Empresa
+				// --------------------------------
+				telaAdicionarResiduo(empresa);
+			} catch (ValorInvalidoException e) {
+				System.err.println("ERRO: " + e.getMessage());
+			}
+		}
 	}
 
 	private Residuo criarResiduo() {
@@ -296,9 +305,8 @@ public class TelaEmpresa {
 				System.out.println("1 - Sim");
 				System.out.println("2 - Não");
 				opc = sc.nextLine();
-				
+
 				if (opc.equals("1")) {
-					
 
 				} else if (opc.equals("2")) {
 					telaAplicacao.Menu();
@@ -329,40 +337,45 @@ public class TelaEmpresa {
 
 			if (opc.equals("1")) {
 				do {
-					System.out.println("O que deseja alterar: ");
-					System.out.println("1 - Nome");
-					System.out.println("2 - Email");
-					System.out.println("3 - Login");
-					System.out.println("4 - Senha");
-					System.out.println("0 - Concluir e voltar ao menu");
-					opc = sc.nextLine();
+					try {
+						System.out.println("O que deseja alterar: ");
+						System.out.println("1 - Nome");
+						System.out.println("2 - Email");
+						System.out.println("3 - Login");
+						System.out.println("4 - Senha");
+						System.out.println("0 - Concluir e voltar ao menu");
+						opc = sc.nextLine();
 
-					switch (opc) {
-					case "1":
-						System.out.println("Digite o novo nome da Empresa:");
-						String novoNome = sc.nextLine();
-						empresa.setNome(novoNome);
-						break;
-					case "2":
-						System.out.println("Digite o novo email da Empresa:");
-						String novoEmail = sc.nextLine();
-						empresa.setEmail(novoEmail);
-						break;
-					case "3":
-						System.out.println("Digite o novo login da Empresa:");
-						String novoLogin = sc.nextLine();
-						empresa.setLogin(novoLogin);
-						break;
-					case "4":
-						System.out.println("Digite a nova senha da Empresa:");
-						String novaSenha = sc.nextLine();
-						empresa.setSenha(novaSenha);
-					case "0":
-						empresaService.alterar(empresa);
-						break;
-					default:
-						System.err.println("ERRO: Opção Inválida\n");
-						break;
+						switch (opc) {
+						case "1":
+							System.out.println("Digite o novo nome da Empresa:");
+							String novoNome = sc.nextLine();
+							empresa.setNome(novoNome);
+							break;
+						case "2":
+							System.out.println("Digite o novo email da Empresa:");
+							String novoEmail = sc.nextLine();
+							empresa.setEmail(novoEmail);
+							break;
+						case "3":
+							System.out.println("Digite o novo login da Empresa:");
+							String novoLogin = sc.nextLine();
+							empresa.setLogin(novoLogin);
+							break;
+						case "4":
+							System.out.println("Digite a nova senha da Empresa:");
+							String novaSenha = sc.nextLine();
+							empresa.setSenha(novaSenha);
+						case "0":
+							empresaService.alterar(empresa);
+							break;
+						default:
+							System.err.println("ERRO: Opção Inválida\n");
+							break;
+						}
+
+					} catch (ValorInvalidoException e) {
+						System.err.println("ERRO: Alterações desfeitas, motivo: " + e.getMessage());
 					}
 				} while (!opc.equals("0"));
 
@@ -519,27 +532,27 @@ public class TelaEmpresa {
 	public void telaDesativarConta(Empresa empresa) {
 		Scanner sc = new Scanner(System.in);
 		String opc = " ";
-		
-		while(!opc.equals("1") || !opc.equals("2")) {
-		
-		System.out.println("Deseja mesmo excluir sua conta?");
-		System.out.println("1- Sim");
-		System.out.println("2- Não");
-		opc = sc.nextLine();
 
-		switch (opc) {
-		case "1":
-			empresaService.deletar(empresa);
-			System.out.println("Conta excluida com sucesso.");
-			telaAplicacao.Menu();
-			break;
-		case "2":
-			telaLoginEmpresa();
-			break;
-		default:
-			System.err.println("ERRO: Opção Inválida\n");
-			break;
-		}
+		while (!opc.equals("1") || !opc.equals("2")) {
+
+			System.out.println("Deseja mesmo excluir sua conta?");
+			System.out.println("1- Sim");
+			System.out.println("2- Não");
+			opc = sc.nextLine();
+
+			switch (opc) {
+			case "1":
+				empresaService.deletar(empresa);
+				System.out.println("Conta excluida com sucesso.");
+				telaAplicacao.Menu();
+				break;
+			case "2":
+				telaLoginEmpresa();
+				break;
+			default:
+				System.err.println("ERRO: Opção Inválida\n");
+				break;
+			}
 		}
 	}
 

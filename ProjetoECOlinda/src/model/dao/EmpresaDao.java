@@ -20,5 +20,9 @@ public interface EmpresaDao {
 	List<Empresa> listarEmpresaResiduo(Residuo residuo);
 
 	List<Empresa> listarEmpresas();
+	
+	boolean existeLogin(Empresa empresa);
+	
+	boolean existeEmail(Empresa empresa);
 
 }

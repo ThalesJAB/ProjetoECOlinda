@@ -66,7 +66,7 @@ public class TelaUsuario {
 				Date dataNascimento = null;
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				boolean statusUsuario = true;
-				
+
 				System.out.println("\nDigite o seu nome: ");
 				String nome = sc.nextLine();
 				System.out.println("Digite o seu Email: ");
@@ -77,21 +77,20 @@ public class TelaUsuario {
 				String senha = sc.nextLine();
 				System.out.println("Digite a sua Data de Nascimento: dia/mes/ano: ");
 				dataNascimento = sdf.parse(sc.nextLine());
-				
 
 				Usuario usuario = new Usuario(null, nome, login, senha, email, dataNascimento, statusUsuario, null,
 						null, null);
 
 				confirmar = usuarioService.cadastrar(usuario);
-				
 
 			} catch (ParseException e) {
-				System.err.println("ERRO: Data de nascimento inválida");;
+				System.err.println("ERRO: Data de nascimento inválida");
+				;
 			} catch (ValorInvalidoException e) {
-				System.err.println("ERRO: "+ e.getMessage());
+				System.err.println("ERRO: " + e.getMessage());
 			}
 		}
-		
+
 		telaLoginUsuario();
 
 	}
@@ -478,12 +477,13 @@ public class TelaUsuario {
 
 			if (opc.equals("1")) {
 				do {
+					try {
 					System.out.println("O que deseja alterar: ");
 					System.out.println("1 - Nome");
 					System.out.println("2 - Email");
 					System.out.println("3 - Login");
 					System.out.println("4 - Senha");
-					System.out.println("0 - Concluir e voltar ao menu");
+					System.out.println("0 - Salvar alterações e voltar ao menu");
 					opc = sc.nextLine();
 
 					switch (opc) {
@@ -514,8 +514,12 @@ public class TelaUsuario {
 						System.err.println("ERRO: Opção Inválida\n");
 						break;
 					}
+					
+					}catch(ValorInvalidoException e) {
+						System.err.println("ERRO: Alterações desfeitas, motivo: "+e.getMessage());
+					}
 				} while (!opc.equals("0"));
-
+				
 			} else if (opc.equals("2")) {
 				List<Endereco> enderecos = enderecoService.procurarEndUsuario(usuario);
 				int i = 1;
@@ -716,7 +720,7 @@ public class TelaUsuario {
 		Scanner sc = new Scanner(System.in);
 		String opc = null;
 		Usuario usuario = new Usuario();
-		
+
 		System.out.println("\n======LOGIN======");
 		System.out.println("Digite seu login: ");
 		String login = sc.nextLine();

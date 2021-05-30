@@ -200,6 +200,9 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			}
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
 		}
 
 	}

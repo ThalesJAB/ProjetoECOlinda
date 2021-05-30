@@ -7,6 +7,7 @@ import model.dao.DaoFactory;
 import model.dao.EmpresaDao;
 import model.entities.Empresa;
 import model.entities.Residuo;
+import model.exceptions.ValorInvalidoException;
 
 public class EmpresaService {
 
@@ -28,8 +29,31 @@ public class EmpresaService {
 		}
 	}
 
-	public void cadastrar(Empresa empresa) {
-		empresaDao.cadastrar(empresa);
+	public boolean cadastrar(Empresa empresa) throws ValorInvalidoException {
+
+		if (empresa.getNome().trim().equals("") || Objects.isNull(empresa.getNome())) {
+			throw new ValorInvalidoException("Nome Inválido!");
+			
+		}
+		if (empresa.getEmail().trim().equals("") || Objects.isNull(empresa.getEmail())) {
+			throw new ValorInvalidoException("Email Inválido!");
+			
+		} else if (empresaDao.existeEmail(empresa)) {
+			throw new ValorInvalidoException("Email já existente, tente novamente!");
+			
+		}
+
+		if (empresa.getLogin().trim().equals("") || Objects.isNull(empresa.getLogin())) {
+			throw new ValorInvalidoException("Login Inválido");
+			
+		} else if (empresaDao.existeLogin(empresa)) {
+			throw new ValorInvalidoException("Login ja existente, tente novamente!");
+			
+		}
+
+		empresaDao.cadastrar(empresa);		
+		return true;
+	
 	}
 
 	public void alterar(Empresa empresa) {

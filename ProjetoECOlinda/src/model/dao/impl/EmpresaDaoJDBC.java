@@ -475,6 +475,57 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 
 	}
 
+	@Override
+	public boolean existeLogin(Empresa empresa) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+			st = connection.prepareStatement("SELECT * FROM EMPRESA " + "WHERE UPPER(login_empresa) = ?;");
+
+			String loginProc = empresa.getLogin().toUpperCase();
+			st.setString(1, loginProc);
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+		}
+	}
+
+	@Override
+	public boolean existeEmail(Empresa empresa) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+			st = connection.prepareStatement("SELECT * FROM EMPRESA " + "WHERE UPPER(email_empresa) = ?;");
+
+			String emailProc = empresa.getEmail().toUpperCase();
+
+			st.setString(1, emailProc);
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+		}
+	}
+
 	public Telefone instanciarTelefone(ResultSet rs) throws SQLException {
 		Telefone telefone = new Telefone();
 		telefone.setId(rs.getInt("id_telefone"));
