@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 import model.entities.Empresa;
 import model.entities.Endereco;
-
+import model.entities.PontoFavorito;
 import model.entities.Residuo;
 import model.entities.Telefone;
 import model.exceptions.ValorInvalidoException;
@@ -175,7 +175,7 @@ public class TelaEmpresa {
 				break;
 
 			case "0":
-				telaAplicacao.Menu();
+				telaEmpresaLogado(empresa);
 				break;
 			default:
 				System.err.println("ERRO: Opção Inválida\n");
@@ -274,50 +274,6 @@ public class TelaEmpresa {
 
 		empresa.setTelefones(telefones);
 		System.out.println("Telefones cadastrados com sucesso");
-
-	}
-
-	// Metodo de Login de Empresa
-	public void telaLoginEmpresa() {
-		Scanner sc = new Scanner(System.in);
-		String opc = "3";
-		Empresa empresa = new Empresa();
-
-		while (!opc.equals("2")) {
-
-			System.out.println("Digite seu login: ");
-			String login = sc.nextLine();
-			System.out.println("Digite sua senha: ");
-			String senha = sc.nextLine();
-
-			empresa.setLogin(login);
-			empresa.setSenha(senha);
-
-			Empresa empresaRetorno = empresaService.login(empresa);
-			if (Objects.nonNull(empresaRetorno)) {
-				telaEmpresaLogado(empresaRetorno);
-
-			} else {
-				System.err.println("Login ou Senha Incorretos.");
-
-				System.out.println("");
-				System.out.println("Deseja tentar de novo?");
-				System.out.println("1 - Sim");
-				System.out.println("2 - Não");
-				opc = sc.nextLine();
-
-				if (opc.equals("1")) {
-
-				} else if (opc.equals("2")) {
-					telaAplicacao.Menu();
-					break;
-
-				} else {
-					System.err.println("ERRO: Opção Inválida\n");
-				}
-
-			}
-		}
 
 	}
 
@@ -535,10 +491,10 @@ public class TelaEmpresa {
 
 				for (Residuo residuo : residuos) {
 					System.out.println("OPÇÃO " + i + " - " + "============ RESIDUO =========");
-					System.out.println(residuo.getTipoResiduo() + " - "+ residuo.getDescricaoResiduo());
+					System.out.println(residuo.getTipoResiduo() + " - " + residuo.getDescricaoResiduo());
 					i++;
 				}
-				
+
 				System.out.println("Escolha o residuo que você quer alterar, a partir da numeração ao lado: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
@@ -547,9 +503,9 @@ public class TelaEmpresa {
 				if (aux > residuos.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 
-				}else {
+				} else {
 					Residuo residuoEditar = residuos.get(aux);
-					
+
 					String opcTel = null;
 
 					do {
@@ -563,7 +519,7 @@ public class TelaEmpresa {
 							System.out.println("Residuo excluido de seu catálogo");
 							residuoService.deletar(residuoEditar, empresa);
 							break;
-							
+
 						case "0":
 							break;
 						default:
@@ -573,11 +529,8 @@ public class TelaEmpresa {
 						}
 
 					} while (!opcTel.equals("0"));
-					
-					
-					
+
 				}
-				
 
 			} else if (opc.equals("0")) {
 				menu = false;
@@ -633,8 +586,8 @@ public class TelaEmpresa {
 				telaEditarEmpresa(empresa);
 				break;
 			}
-			
-			else if(opc.equals("2")) {
+
+			else if (opc.equals("2")) {
 				telaAdicionarResiduo(empresa);
 				break;
 			}
@@ -654,6 +607,58 @@ public class TelaEmpresa {
 
 			}
 
+		}
+
+	}
+
+	// Metodo de Login de Empresa
+	public void telaLoginEmpresa() {
+		Scanner sc = new Scanner(System.in);
+		String opc = "3";
+		Empresa empresa = new Empresa();
+
+		while (!opc.equals("2")) {
+
+			System.out.println("Digite seu login: ");
+			String login = sc.nextLine();
+			System.out.println("Digite sua senha: ");
+			String senha = sc.nextLine();
+
+			empresa.setLogin(login);
+			empresa.setSenha(senha);
+
+			Empresa empresaRetorno = empresaService.login(empresa);
+			if (Objects.nonNull(empresaRetorno)) {
+				List<Telefone> telefones = telefoneService.procurarTelEmpresa(empresaRetorno);
+				List<Endereco> enderecos = enderecoService.procurarEndEmpresa(empresaRetorno);
+				List<Residuo> residuos = residuoService.residuosEmpresa(empresaRetorno);
+
+				empresaRetorno.setTelefones(telefones);
+				empresaRetorno.setEnderecos(enderecos);
+				empresaRetorno.setResiduos(residuos);
+
+				telaEmpresaLogado(empresaRetorno);
+
+			} else {
+				System.err.println("Login ou Senha Incorretos.");
+
+				System.out.println("");
+				System.out.println("Deseja tentar de novo?");
+				System.out.println("1 - Sim");
+				System.out.println("2 - Não");
+				opc = sc.nextLine();
+
+				if (opc.equals("1")) {
+
+				} else if (opc.equals("2")) {
+					telaAplicacao.Menu();
+					break;
+
+				} else {
+					System.err.println("ERRO: Opção Inválida\n");
+				}
+
+			}
 		}
 
 	}

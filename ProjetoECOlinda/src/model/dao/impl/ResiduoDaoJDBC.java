@@ -67,20 +67,40 @@ public class ResiduoDaoJDBC implements ResiduoDao {
 	@Override
 	public void cadastrarResiduoEmp(Residuo residuo, Empresa empresa) {
 		PreparedStatement st = null;
+		List<Residuo> residuosEmp = residuosEmpresa(empresa);
 
 		try {
 
-			st = connection.prepareStatement(
-					"INSERT INTO RESIDUO_EMPRESA(residuo_id_residuo, empresa_id_empresa, status) VALUES "
-							+ "(?, ?, true);");
+			if (procurar(residuo, empresa)) {
+				st = connection.prepareStatement("UPDATE RESIDUO_EMPRESA " + "SET " + "	status = true " + "WHERE "
+						+ "	empresa_id_empresa = ? AND residuo_id_residuo = ?;");
 
-			st.setInt(1, residuo.getId());
-			st.setInt(2, empresa.getId());
+				st.setInt(1, empresa.getId());
+				st.setInt(2, residuo.getId());
 
-			int linhasAf = st.executeUpdate();
-			
-			if(linhasAf > 0) {
-				System.out.println("Residuo cadastrado com sucesso");
+				int linhasAf = st.executeUpdate();
+
+				if (linhasAf > 0) {
+					System.out.println("Residuo cadastrado com sucesso");
+				}
+			} else if (residuosEmp.contains(residuo)) {
+
+				System.err.println("Você não pode cadastrar o mesmo resíduo duas vezes!");
+
+			} else {
+				st = connection.prepareStatement(
+						"INSERT INTO RESIDUO_EMPRESA(residuo_id_residuo, empresa_id_empresa, status) VALUES "
+								+ "(?, ?, true);");
+
+				st.setInt(1, residuo.getId());
+				st.setInt(2, empresa.getId());
+
+				int linhasAf = st.executeUpdate();
+
+				if (linhasAf > 0) {
+					System.out.println("Residuo cadastrado com sucesso");
+
+				}
 			}
 
 		} catch (SQLException e) {
@@ -137,7 +157,7 @@ public class ResiduoDaoJDBC implements ResiduoDao {
 			int linhasAf = st.executeUpdate();
 
 			if (linhasAf > 0) {
-				System.out.println("Linhas Afetadas: " + linhasAf);
+				System.out.println("Residuo da Empresa excluido com sucesso");
 			} else {
 				throw new DbException("Erro inesperado! Nenhuma linha afetada!");
 
@@ -153,26 +173,30 @@ public class ResiduoDaoJDBC implements ResiduoDao {
 	}
 
 	@Override
-	public Residuo procurar(Residuo residuo) {
+	public boolean procurar(Residuo residuo, Empresa empresa) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 
 		try {
 			st = connection.prepareStatement(
-					"SELECT id_residuo AS id, tipo_residuo AS tipoResiduo, descricao_residuo AS descricaoResiduo, status FROM residuo "
-							+ "WHERE status = ? AND id_residuo = ? " + "ORDER BY id_residuo; ");
+					"SELECT id_residuo as id, tipo_residuo as tipoResiduo, descricao_residuo as descricaoResiduo, residuo.status as status FROM "
+							+ "EMPRESA INNER JOIN RESIDUO_EMPRESA "
+							+ "ON EMPRESA.id_empresa = RESIDUO_EMPRESA.empresa_id_empresa " + "INNER JOIN RESIDUO "
+							+ "ON RESIDUO.id_residuo = RESIDUO_EMPRESA.residuo_id_residuo "
+							+ "WHERE EMPRESA.id_empresa = ? AND RESIDUO.id_residuo = ? AND EMPRESA.status = true AND RESIDUO_EMPRESA.status= false AND RESIDUO.status = true; ");
 
-			st.setBoolean(1, residuo.getStatus());
+			st.setInt(1, empresa.getId());
 			st.setInt(2, residuo.getId());
+
 			rs = st.executeQuery();
 
 			if (rs.next()) {
-				Residuo residuoProcurado = instanciarResiduo(rs);
-				return residuoProcurado;
+
+				return true;
 
 			}
 
-			return null;
+			return false;
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
@@ -195,7 +219,7 @@ public class ResiduoDaoJDBC implements ResiduoDao {
 							+ "INNER JOIN RESIDUO_EMPRESA "
 							+ "ON RESIDUO_EMPRESA.residuo_id_residuo = RESIDUO.id_residuo " + "INNER JOIN EMPRESA  "
 							+ "ON EMPRESA.id_empresa = RESIDUO_EMPRESA.empresa_id_empresa "
-							+ "WHERE EMPRESA.id_empresa = ? and RESIDUO_EMPRESA.status = true ");
+							+ "WHERE EMPRESA.id_empresa = ? and RESIDUO_EMPRESA.status = true and RESIDUO.status = true and EMPRESA.status = true; ");
 
 			st.setInt(1, empresa.getId());
 

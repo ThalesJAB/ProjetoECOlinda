@@ -235,73 +235,22 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 		Empresa empresaRetorno = null;
 
 		try {
-			st = connection.prepareStatement("SELECT  " + "	EMPRESA.*, " + "	TELEFONE.id_telefone, "
-					+ "	TELEFONE.telefone, " + "	TELEFONE.empresa_id_empresa, " + "	ENDERECO.id_endereco, "
-					+ "	ENDERECO.cep, " + "	ENDERECO.logradouro, " + "	ENDERECO.numero, " + "	ENDERECO.complemento, "
-					+ "	ENDERECO.bairro, " + "	ENDERECO.cidade,  " + "	ENDERECO.estado, "
-					+ "	ENDERECO.empresa_id_empresa, " + "	RESIDUO.id_residuo, " + "	RESIDUO.tipo_residuo, "
-					+ "	RESIDUO.descricao_residuo " + "FROM EMPRESA " + "INNER JOIN TELEFONE "
-					+ "ON EMPRESA.id_empresa = TELEFONE.empresa_id_empresa " + "INNER JOIN ENDERECO "
-					+ "ON EMPRESA.id_empresa = ENDERECO.empresa_id_empresa " + "INNER JOIN RESIDUO_EMPRESA "
-					+ "ON EMPRESA.id_empresa = RESIDUO_EMPRESA.empresa_id_empresa " + "INNER JOIN RESIDUO "
-					+ "ON RESIDUO_EMPRESA.residuo_id_residuo = RESIDUO.id_residuo "
-					+ "WHERE EMPRESA.login_empresa = ? AND EMPRESA.senha_empresa = ? AND EMPRESA.status = true AND TELEFONE.status = true AND ENDERECO.status = true AND RESIDUO_EMPRESA.status = true;");
+			st = connection.prepareStatement("SELECT * FROM EMPRESA "
+											+ "WHERE EMPRESA.login_empresa = ? AND EMPRESA.senha_empresa = ? AND EMPRESA.status = true;");
 
 			st.setString(1, empresa.getLogin());
 			st.setString(2, empresa.getSenha());
 
 			rs = st.executeQuery();
-
-			Map<Integer, Telefone> telefoneMap = new HashMap<>();
-			Map<Integer, Residuo> residuoMap = new HashMap<>();
-			Map<Integer, Endereco> enderecoMap = new HashMap<>();
-			Map<Integer, Empresa> empresaMap = new HashMap<>();
-
-			while (rs.next()) {
-				Telefone telefone = telefoneMap.get(rs.getInt("id_telefone"));
-				Residuo residuo = residuoMap.get(rs.getInt("id_residuo"));
-				Endereco endereco = enderecoMap.get(rs.getInt("id_endereco"));
-				Empresa empresaAnalise = empresaMap.get(rs.getInt("id_empresa"));
-
-				if (Objects.isNull(telefone)) {
-					telefone = instanciarTelefone(rs);
-					telefoneMap.put(rs.getInt("id_telefone"), telefone);
-
-				}
-
-				if (Objects.isNull(residuo)) {
-					residuo = instanciarResiduo(rs);
-					residuoMap.put(rs.getInt("id_residuo"), residuo);
-				}
-
-				if (Objects.isNull(endereco)) {
-					endereco = instanciarEndereco(rs);
-					enderecoMap.put(rs.getInt("id_endereco"), endereco);
-				}
-
-				if (Objects.isNull(empresaAnalise)) {
-					empresaAnalise = instanciarEmpresa(rs);
-					empresaMap.put(rs.getInt("id_empresa"), empresaAnalise);
-				}
-
-				if (!empresaAnalise.getTelefones().contains(telefone)) {
-					empresaAnalise.addTelefone(telefone);
-
-				}
-
-				if (!empresaAnalise.getEnderecos().contains(endereco)) {
-					empresaAnalise.addEndereco(endereco);
-				}
-
-				if (!empresaAnalise.getResiduos().contains(residuo)) {
-					empresaAnalise.addResiduo(residuo);
-				}
-
-				empresaRetorno = empresaAnalise;
-
+			
+			if(rs.next()) {
+				empresaRetorno = instanciarEmpresa(rs);
 			}
-
+			
 			return empresaRetorno;
+			
+			
+
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());

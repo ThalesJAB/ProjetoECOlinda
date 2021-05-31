@@ -16,7 +16,7 @@ public class ProgramTesteResiduo {
 		
 		System.out.println("========================= TESTE 2: PROCURAR DETERMINADO RESIDUO ==========================");
 		Residuo residuo = new Residuo(2, null, null, true);
-		System.out.println(residuoDao.procurar(residuo));
+		//System.out.println(residuoDao.procurar(residuo));
 		System.out.println();
 		
 		System.out.println("========================= TESTE 3: DELETAR DETERMINADO RESIDUO POR ID E ID EMPRESA ==========================");

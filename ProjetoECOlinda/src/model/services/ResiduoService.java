@@ -44,8 +44,8 @@ public class ResiduoService {
 		residuoDao.deletar(residuo, empresa);
 	}
 
-	public Residuo procurar(Residuo residuo) {
-		return residuoDao.procurar(residuo);
+	public boolean procurar(Residuo residuo, Empresa empresa) {
+		return residuoDao.procurar(residuo, empresa);
 	}
 
 	public List<Residuo> residuosEmpresa(Empresa empresa) {

@@ -298,9 +298,9 @@ public class EnderecoDaoJDBC implements EnderecoDao {
 		try {
 			st = connection.prepareStatement(
 					"SELECT id_endereco as id, cep, logradouro, numero, complemento, bairro, cidade, estado, empresa_id_empresa, endereco.status "
-							+ "FROM ENDERECO INNER JOIN USUARIO_ENDERECO " + "ON id_endereco = endereco_id_endereco "
-							+ "INNER JOIN USUARIO " + "ON id_usuario = usuario_id_usuario "
-							+ "WHERE id_usuario = ? and USUARIO.status =  true and USUARIO_ENDERECO.status =  true AND ENDERECO.status = true;");
+							+ "FROM ENDERECO INNER JOIN USUARIO_ENDERECO " + "ON ENDERECO.id_endereco = USUARIO_ENDERECO.endereco_id_endereco "
+							+ "INNER JOIN USUARIO " + "ON USUARIO.id_usuario = USUARIO_ENDERECO.usuario_id_usuario "
+							+ "WHERE USUARIO.id_usuario = ? and USUARIO.status =  true and USUARIO_ENDERECO.status =  true AND ENDERECO.status = true;");
 
 			st.setInt(1, usuario.getId());
 

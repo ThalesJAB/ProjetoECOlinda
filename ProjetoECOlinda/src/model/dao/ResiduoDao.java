@@ -15,7 +15,7 @@ public interface ResiduoDao {
 
 	void deletar(Residuo residuo, Empresa empresa);
 
-	Residuo procurar(Residuo residuo);
+	boolean procurar(Residuo residuo, Empresa empresa);
 	
 	List<Residuo> residuosEmpresa(Empresa empresa);
 	
