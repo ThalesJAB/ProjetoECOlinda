@@ -13,6 +13,7 @@ import model.entities.Telefone;
 import model.exceptions.ValorInvalidoException;
 import model.services.EmpresaService;
 import model.services.EnderecoService;
+import model.services.PontoFavoritoService;
 import model.services.ResiduoService;
 import model.services.TelefoneService;
 
@@ -25,6 +26,8 @@ public class TelaEmpresa {
 	private static EnderecoService enderecoService = EnderecoService.getInstance();
 
 	private static ResiduoService residuoService = ResiduoService.getInstance();
+
+	private static PontoFavoritoService pontoFavoritoService = PontoFavoritoService.getInstance();
 
 	private static TelaAplicacao telaAplicacao = TelaAplicacao.getInstance();
 
@@ -80,6 +83,11 @@ public class TelaEmpresa {
 				// Cadastro de Residuo Empresa
 				// --------------------------------
 				telaAdicionarResiduo(empresa);
+
+				// Adicionando Empresa a Ponto Favorito
+				PontoFavorito pontoFavEmpresa = new PontoFavorito(null, null, empresa, null);
+				pontoFavoritoService.cadastrarPontoFavorito(pontoFavEmpresa);
+
 			} catch (ValorInvalidoException e) {
 				System.err.println("ERRO: " + e.getMessage());
 			}
@@ -350,16 +358,21 @@ public class TelaEmpresa {
 					i++;
 				}
 				System.out.println("===================================================================");
-				System.out.println("Escolha o endereco que você quer alterar, a partir da numeração ao lado: ");
+				System.out.println(
+						"Escolha o endereco que você quer alterar, a partir da numeração ao lado ou 0 para voltar ao menu: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
-				aux = aux - 1;
 
 				if (aux > enderecos.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 
-				} else {
+				} else if (aux == 0) {
 
+					System.out.println("Voltando ao menu...");
+				}
+
+				else {
+					aux = aux - 1;
 					Endereco enderecoEditar = enderecos.get(aux);
 
 					String opcEnd = null;
@@ -441,16 +454,21 @@ public class TelaEmpresa {
 
 				System.out.println("=======================================================================");
 
-				System.out.println("Escolha o telefone que você quer alterar, a partir da numeração ao lado: ");
+				System.out.println(
+						"Escolha o telefone que você quer alterar, a partir da numeração ao lado ou 0 para voltar ao menu: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
-				aux = aux - 1;
 
 				if (aux > telefones.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 
-				} else {
+				} else if (aux == 0) {
 
+					System.out.println("Voltando ao menu...");
+				}
+
+				else {
+					aux = aux - 1;
 					Telefone telefoneEditar = telefones.get(aux);
 
 					String opcTel = null;
@@ -495,15 +513,20 @@ public class TelaEmpresa {
 					i++;
 				}
 
-				System.out.println("Escolha o residuo que você quer alterar, a partir da numeração ao lado: ");
+				System.out.println(
+						"Escolha o residuo que você quer alterar, a partir da numeração ao lado ou 0 para voltar ao menu: ");
 				int aux = sc.nextInt();
 				sc.nextLine();
-				aux = aux - 1;
 
 				if (aux > residuos.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 
-				} else {
+				} else if (aux == 0) {
+					System.out.println("Voltando ao menu...");
+				}
+
+				else {
+					aux = aux - 1;
 					Residuo residuoEditar = residuos.get(aux);
 
 					String opcTel = null;

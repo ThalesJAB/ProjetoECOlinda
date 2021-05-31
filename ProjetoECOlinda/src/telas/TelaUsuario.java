@@ -1,6 +1,5 @@
 package telas;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-import model.dao.impl.UsuarioDaoJDBC;
 import model.entities.Empresa;
 import model.entities.Endereco;
 import model.entities.PontoFavorito;
@@ -20,7 +18,6 @@ import model.exceptions.ValorInvalidoException;
 import model.services.EmpresaService;
 import model.services.EnderecoService;
 import model.services.PontoFavoritoService;
-import model.services.ResiduoService;
 import model.services.TelefoneService;
 import model.services.UsuarioService;
 
@@ -29,8 +26,6 @@ public class TelaUsuario {
 	private static TelaUsuario telaUsuario;
 
 	private static TelaAplicacao telaAplicacao = TelaAplicacao.getInstance();
-
-	private static TelaEmpresa telaEmpresa = TelaEmpresa.getInstance();
 
 	private static UsuarioService usuarioService = UsuarioService.getInstance();
 
@@ -301,6 +296,7 @@ public class TelaUsuario {
 
 			}
 
+			i = 0;
 			for (Empresa empresa : empresas) {
 				System.out.println(i + 1 + " - " + empresa.getNome() + ", " + empresa.getEmail());
 				i++;
@@ -308,14 +304,20 @@ public class TelaUsuario {
 			int aux = 0;
 
 			if (empresas.size() > 0) {
-				System.out.print("\nSelecione a empresa pela númeração para mais informações: ");
+				System.out
+						.print("\nSelecione a empresa pela númeração para mais informações ou 0 para voltar ao menu: ");
 				aux = sc.nextInt();
 				sc.nextLine();
-				aux = aux - 1;
 				if (aux > empresas.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
+				}
+
+				else if (aux == 0) {
+
+					System.out.println("\nVoltando ao menu...");
 
 				} else {
+					aux = aux - 1;
 					Empresa empresa = empresas.get(aux);
 					System.out.println("\n========== EMPRESA ==========");
 					System.out.println("Nome: " + empresa.getNome() + "\n" + "Email: " + empresa.getEmail() + "\n");
@@ -454,13 +456,13 @@ public class TelaUsuario {
 		if (pontosFavoritosUsuario.isEmpty()) {
 			System.err.println("O Usuario não possui pontos favoritos");
 		} else {
-			// pontosFavoritosUsuario.forEach(System.out::println);
 
 			for (PontoFavorito pontoFavorito : pontosFavoritosUsuario) {
 				System.out.println("\n========== EMPRESA ==========");
-				System.out.println("Nome: " + pontoFavorito.getEmpresa().getNome() + "\n" + "Email: " + pontoFavorito.getEmpresa().getEmail() + "\n");
+				System.out.println("Nome: " + pontoFavorito.getEmpresa().getNome() + "\n" + "Email: "
+						+ pontoFavorito.getEmpresa().getEmail() + "\n");
 				System.out.println("============ TELEFONE =========");
-				
+
 				for (Telefone telefone : pontoFavorito.getEmpresa().getTelefones()) {
 					System.out.println(telefone.getNumTelefone());
 				}
@@ -472,10 +474,9 @@ public class TelaUsuario {
 							+ ";\nBairro: " + endereco.getBairro() + ";\nCidade: " + endereco.getCidade()
 							+ ";\nEstado: " + endereco.getEstado());
 				}
-				
+
 				System.out.println("========================================================================");
-				
-				
+
 			}
 
 			while (!opc.equals("2") && !opc.equals("1")) {
@@ -483,25 +484,31 @@ public class TelaUsuario {
 				System.out.println("1 - SIM");
 				System.out.println("2 - NÃO");
 				opc = sc.nextLine();
-				
-				i = 1;
 
 				if (opc.equals("1")) {
 					for (PontoFavorito pontoFavorito : pontosFavoritosUsuario) {
-						System.out.println("Opção "+ i +" - ");
-						System.out.println("\n========== EMPRESA ==========");
-						System.out.println("Nome: " + pontoFavorito.getEmpresa().getNome() + "\n" + "Email: " + pontoFavorito.getEmpresa().getEmail() + "\n");
+						System.out.println(i + 1 + "-" + "========== EMPRESA ==========");
+						System.out.println("Nome: " + pontoFavorito.getEmpresa().getNome() + "\n" + "Email: "
+								+ pontoFavorito.getEmpresa().getEmail() + "\n");
 						i++;
 					}
 
-					System.out.println("\nDigite um que você queira deletar, a partir da numeração ao lado: ");
+					System.out.println(
+							"\nDigite um que você queira deletar, a partir da numeração ao lado ou 0 para voltar ao menu: ");
 					aux = sc.nextInt();
 					sc.nextLine();
 
-					aux = aux - 1;
-					PontoFavorito pontoFavoritoRet = pontosFavoritosUsuario.get(aux);
+					if (aux > pontosFavoritosUsuario.size() - 1 || aux < 0) {
+						System.err.println("ERRO: Opção Inválida\n");
 
-					pontoFavoritoService.deletarPontoFvUsuario(pontoFavoritoRet);
+					} else if (aux == 0) {
+						System.out.println("\nVoltando ao menu...");
+					} else {
+						aux = aux - 1;
+						PontoFavorito pontoFavoritoRet = pontosFavoritosUsuario.get(aux);
+
+						pontoFavoritoService.deletarPontoFvUsuario(pontoFavoritoRet);
+					}
 
 				} else if (opc.equals("2")) {
 					telaUsuarioLogado(usuario);
@@ -576,20 +583,27 @@ public class TelaUsuario {
 				List<Endereco> enderecos = enderecoService.procurarEndUsuario(usuario);
 				int i = 1;
 
-				for(Endereco endereco : enderecos) {
-					System.out.println("OPÇÃO "+i+" - "+"========== ENDEREÇO ==========");
-					System.out.println("CEP: "+ endereco.getCep() +";\nLogradouro: "+ endereco.getLogradouro() + ";\nNúmero "+endereco.getNumero()
-					+";\nComplemento: "+endereco.getComplemento()+";\nBairro: "+endereco.getBairro() + ";\nCidade: "+endereco.getCidade()+";\nEstado: "+endereco.getEstado());
+				for (Endereco endereco : enderecos) {
+					System.out.println("OPÇÃO " + i + " - " + "========== ENDEREÇO ==========");
+					System.out.println("CEP: " + endereco.getCep() + ";\nLogradouro: " + endereco.getLogradouro()
+							+ ";\nNúmero " + endereco.getNumero() + ";\nComplemento: " + endereco.getComplemento()
+							+ ";\nBairro: " + endereco.getBairro() + ";\nCidade: " + endereco.getCidade()
+							+ ";\nEstado: " + endereco.getEstado());
 					i++;
 				}
+				int aux = 0;
 				System.out.println("=========================================================");
-				System.out.println("\nEscolha o endereco que você quer alterar, a partir da numeração ao lado: ");
-				int aux = sc.nextInt();
+				System.out.println(
+						"\nEscolha o endereco que você quer alterar, a partir da numeração ao lado ou 0 para voltar ao menu: ");
+				aux = sc.nextInt();
 				sc.nextLine();
-				aux = aux - 1;
+
 				if (aux > enderecos.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
+				} else if (aux == 0) {
+					System.out.println("Voltando ao menu...");
 				} else {
+					aux = aux - 1;
 					Endereco enderecoEditar = enderecos.get(aux);
 
 					String opcEnd = null;
@@ -663,22 +677,29 @@ public class TelaUsuario {
 				List<Telefone> telefones = telefoneService.procurarTelUsuario(usuario);
 				int i = 1;
 
-				for(Telefone telefone : telefones) {
-					System.out.println("OPÇÃO "+i+" - "+"============ TELEFONE =========");
+				for (Telefone telefone : telefones) {
+					System.out.println("OPÇÃO " + i + " - " + "============ TELEFONE =========");
 
 					System.out.println(telefone.getNumTelefone());
 					i++;
 				}
-				
+
 				System.out.println("=======================================================================");
 
-				System.out.println("\nEscolha o telefone que você quer alterar, a partir da numeração:");
+				System.out.println(
+						"\nEscolha o telefone que você quer alterar, a partir da numeração ou 0 para voltar ao menu:");
 				int aux = sc.nextInt();
 				sc.nextLine();
-				aux = aux - 1;
 				if (aux > telefones.size() - 1 || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
+				}
+
+				else if (aux == 0) {
+
+					System.out.println("Voltando ao menu...");
+
 				} else {
+					aux = aux - 1;
 
 					Telefone telefoneEditar = telefones.get(aux);
 
