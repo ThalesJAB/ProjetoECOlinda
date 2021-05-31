@@ -42,17 +42,17 @@ public class TelaAplicacao {
 			opc = sc.nextLine();
 
 			if(opc.equals("1")) {
-				TelaOpcaoLogin();
+				telaOpcaoLogin();
 				confirmar = false;
 			}
 			
 			else if(opc.equals("2")) {
-				telaUsuario.cadastroUsuario();
+				telaUsuario.telaCadastroUsuario();
 				confirmar = false;
 			}
 			
 			else if(opc.equals("3")) {
-				telaEmpresa.cadastroEmpresa();
+				telaEmpresa.telaCadastroEmpresa();
 				confirmar = false;
 				
 			}else if(opc.equals("0")) {
@@ -71,12 +71,13 @@ public class TelaAplicacao {
 	}
 
 	// Tela de Opção de Login
-	public void TelaOpcaoLogin() {
+	public void telaOpcaoLogin() {
 		Scanner sc = new Scanner(System.in);
 		String opc = "99";
 		System.out.println("Você é um Usuario ou Empresa: ");
-		System.out.println("1 - Usuario:");
-		System.out.println("2 - Empresa:");
+		System.out.println("1 - Usuario");
+		System.out.println("2 - Empresa");
+		System.out.println(":");
 		opc = sc.next();
 
 		switch (opc) {

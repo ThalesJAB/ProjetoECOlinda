@@ -52,7 +52,7 @@ public class TelaUsuario {
 
 	// Cadastro de Usuário
 	// -----------------------------------------------------------------
-	public void cadastroUsuario() {
+	public void telaCadastroUsuario() {
 		Scanner sc = new Scanner(System.in);
 		boolean confirmar = false;
 
@@ -93,7 +93,7 @@ public class TelaUsuario {
 	// Cadastro de Endereço
 	// -------------------------------------------------------------------
 
-	public void cadastrarEndereco(Usuario usuario) {
+	public void telaCadastrarEndereco(Usuario usuario) {
 		Scanner sc = new Scanner(System.in);
 
 		List<Endereco> enderecos = new ArrayList<>();
@@ -146,14 +146,16 @@ public class TelaUsuario {
 
 		for (Endereco endereco : enderecos) {
 			enderecoService.cadastrarEndUsuario(endereco, usuario);
+			usuario.addEndereco(endereco);
+			
 
 		}
-		usuario.setEnderecos(enderecos);
+		
 		System.out.println("Endereços cadastrados com sucesso");
 
 	}
 
-	public void cadastrarTelefone(Usuario usuario) {
+	public void telaCadastrarTelefone(Usuario usuario) {
 
 		Scanner sc = new Scanner(System.in);
 		List<Telefone> telefones = new ArrayList<>();
@@ -165,7 +167,7 @@ public class TelaUsuario {
 			String numtelefone = sc.nextLine();
 			boolean statusTelefone = true;
 
-			Telefone telefone = new Telefone(null, numtelefone, null, usuario.getId(), statusTelefone);
+			Telefone telefone = new Telefone(null, numtelefone, usuario.getId(), null, statusTelefone);
 			telefones.add(telefone);
 
 			while (confirmar) {
@@ -194,14 +196,15 @@ public class TelaUsuario {
 
 		for (Telefone telefone : telefones) {
 			telefoneService.cadastrar(telefone);
+			usuario.addTelefone(telefone);
 		}
-		usuario.setTelefones(telefones);
+		
 		System.out.println("Telefones cadastrados com sucesso");
 
 	}
 
 	// Tela de desativar a conta do Usuario
-	public void TelaDesativarConta(Usuario usuario) {
+	public void telaDesativarConta(Usuario usuario) {
 		Scanner sc = new Scanner(System.in);
 		String opc = null;
 
@@ -365,7 +368,7 @@ public class TelaUsuario {
 
 	}
 
-	public void TelaBuscarEmpresaNome(Usuario usuario) {
+	public void telaBuscarEmpresaNome(Usuario usuario) {
 		Scanner sc = new Scanner(System.in);
 		Empresa empresa = new Empresa();
 		System.out.print("Digite a empresa que você procura: ");
@@ -521,7 +524,7 @@ public class TelaUsuario {
 
 	}
 
-	public void TelaEditarUsuario(Usuario usuario) {
+	public void telaEditarUsuario(Usuario usuario) {
 		Scanner sc = new Scanner(System.in);
 		String opc = null;
 		boolean menu = true;
@@ -760,28 +763,37 @@ public class TelaUsuario {
 			System.out.println("1 - Buscar Empresa por Nome");
 			System.out.println("2 - Buscar Empresa por Residuo");
 			System.out.println("3 - Editar Informações");
-			System.out.println("4 - Desativar Conta");
-			System.out.println("5 - Listar Minhas Empresas Favoritas");
-			System.out.println("6 - Fazer Logoff");
+			System.out.println("4 - Adicionar Telefone");
+			System.out.println("5 - Adicionar Endereço");
+			System.out.println("6 - Desativar Conta");
+			System.out.println("7 - Listar Minhas Empresas Favoritas");
+			System.out.println("8 - Fazer Logoff");
 			opc = sc.next();
 
 			switch (opc) {
 			case "1":
-				TelaBuscarEmpresaNome(usuario);
+				telaBuscarEmpresaNome(usuario);
 				break;
 			case "2":
 				telaBuscaEmpPorResiduo(usuario);
 				break;
 			case "3":
-				TelaEditarUsuario(usuario);
+				telaEditarUsuario(usuario);
 				break;
+
 			case "4":
-				TelaDesativarConta(usuario);
+				telaCadastrarTelefone(usuario);
 				break;
 			case "5":
-				telaListarEmpresasFavoritas(usuario);
+				telaCadastrarEndereco(usuario);
 				break;
 			case "6":
+				telaDesativarConta(usuario);
+				break;
+			case "7":
+				telaListarEmpresasFavoritas(usuario);
+				break;
+			case "8":
 				System.out.println("Fazendo Logoff.");
 				telaAplicacao.Menu();
 				break;

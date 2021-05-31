@@ -46,7 +46,7 @@ public class TelaEmpresa {
 
 	}
 
-	public void cadastroEmpresa() {
+	public void telaCadastroEmpresa() {
 
 		// Cadastro de Empresa
 		// ------------------------------------------------------------------
@@ -247,10 +247,10 @@ public class TelaEmpresa {
 
 		for (Endereco endereco : enderecos) {
 			enderecoService.cadastrarEndEmpresa(endereco, empresa);
-
+			empresa.addEndereco(endereco);
 		}
 
-		empresa.setEnderecos(enderecos);
+		
 
 		System.out.println("Endereços cadastrados com sucesso");
 
@@ -278,9 +278,9 @@ public class TelaEmpresa {
 
 		for (Telefone telefone : telefones) {
 			telefoneService.cadastrar(telefone);
+			empresa.addTelefone(telefone);
 		}
 
-		empresa.setTelefones(telefones);
 		System.out.println("Telefones cadastrados com sucesso");
 
 	}
@@ -601,8 +601,10 @@ public class TelaEmpresa {
 			System.out.println("O que deseja fazer?");
 			System.out.println("1 - Editar Informações");
 			System.out.println("2 - Adicionar Resíduo ao Catálogo");
-			System.out.println("3 - Desativar Conta");
-			System.out.println("4 - Fazer Logoff");
+			System.out.println("3 - Adicionar Telefone");
+			System.out.println("4 - Adicionar Endereco");
+			System.out.println("5 - Desativar Conta");
+			System.out.println("6 - Fazer Logoff");
 			opc = sc.nextLine();
 
 			if (opc.equals("1")) {
@@ -614,13 +616,23 @@ public class TelaEmpresa {
 				telaAdicionarResiduo(empresa);
 				break;
 			}
+			
+			else if(opc.equals("3")) {
+				telaAdicionarTelefone(empresa);
+				break;
+			}
+			
+			else if(opc.equals("4")) {
+				telaAdicionarEndereco(empresa);
+				break;
+			}
 
-			else if (opc.equals("3")) {
+			else if (opc.equals("5")) {
 				telaDesativarConta(empresa);
 				break;
 			}
 
-			else if (opc.equals("4")) {
+			else if (opc.equals("6")) {
 				System.out.println("Fazendo Logoff");
 				telaAplicacao.Menu();
 				break;

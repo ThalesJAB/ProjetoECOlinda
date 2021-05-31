@@ -154,10 +154,9 @@ public class TelefoneDaoJDBC implements TelefoneDao {
 
 			st = connection.prepareStatement(
 					"select id_telefone as id, telefone as numTelefone, usuario_id_usuario as idUsuario, empresa_id_empresa as idEmpresa, status from telefone "
-							+ "where usuario_id_usuario = ? and status = ?;");
+							+ "where usuario_id_usuario = ? and status = true;");
 
 			st.setInt(1, usuario.getId());
-			st.setBoolean(2, usuario.getStatus());
 
 			rs = st.executeQuery();
 
