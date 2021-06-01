@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Usuario implements Serializable {
 
@@ -121,14 +122,26 @@ public class Usuario implements Serializable {
 	}
 
 	public void addPontoFavorito(PontoFavorito pontoFavorito) {
+		if (Objects.isNull(pontosFav)) {
+			this.pontosFav = new ArrayList<>();
+			pontosFav.add(pontoFavorito);
+		}
 		pontosFav.add(pontoFavorito);
 	}
 
 	public void addTelefone(Telefone telefone) {
+		if (Objects.isNull(telefones)) {
+			this.telefones = new ArrayList<>();
+			telefones.add(telefone);
+		}
 		telefones.add(telefone);
 	}
 
 	public void addEndereco(Endereco endereco) {
+		if (Objects.isNull(enderecos)) {
+			this.enderecos = new ArrayList<>();
+			enderecos.add(endereco);
+		}
 		enderecos.add(endereco);
 	}
 

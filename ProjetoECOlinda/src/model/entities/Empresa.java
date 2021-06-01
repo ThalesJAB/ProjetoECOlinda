@@ -3,6 +3,7 @@ package model.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Empresa implements Serializable {
 
@@ -87,7 +88,6 @@ public class Empresa implements Serializable {
 	public List<Telefone> getTelefones() {
 		return telefones;
 	}
-	
 
 	public void setTelefones(List<Telefone> telefones) {
 		this.telefones = telefones;
@@ -96,7 +96,6 @@ public class Empresa implements Serializable {
 	public List<Endereco> getEnderecos() {
 		return enderecos;
 	}
-	
 
 	public void setEnderecos(List<Endereco> enderecos) {
 		this.enderecos = enderecos;
@@ -105,21 +104,32 @@ public class Empresa implements Serializable {
 	public List<Residuo> getResiduos() {
 		return residuos;
 	}
-	
 
 	public void setResiduos(List<Residuo> residuos) {
 		this.residuos = residuos;
 	}
 
 	public void addTelefone(Telefone telefone) {
+		if (Objects.isNull(telefones)) {
+			this.telefones = new ArrayList<>();
+			telefones.add(telefone);
+		}
 		telefones.add(telefone);
 	}
 
 	public void addEndereco(Endereco endereco) {
+		if (Objects.isNull(enderecos)) {
+			this.enderecos = new ArrayList<>();
+			enderecos.add(endereco);
+		}
 		enderecos.add(endereco);
 	}
 
 	public void addResiduo(Residuo residuo) {
+		if (Objects.isNull(residuos)) {
+			this.residuos = new ArrayList<>();
+			residuos.add(residuo);
+		}
 		residuos.add(residuo);
 	}
 
@@ -155,9 +165,5 @@ public class Empresa implements Serializable {
 				+ ", status=" + status + ", telefones=" + telefones + ", enderecos=" + enderecos + ", residuos="
 				+ residuos + "]";
 	}
-
-	
-
-	
 
 }

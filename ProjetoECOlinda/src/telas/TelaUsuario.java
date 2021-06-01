@@ -62,7 +62,7 @@ public class TelaUsuario {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				boolean statusUsuario = true;
 
-				System.out.println("\nDigite o seu nome: ");
+				System.out.println("\nDigite o seu Nome: ");
 				String nome = sc.nextLine();
 				System.out.println("Digite o seu Email: ");
 				String email = sc.nextLine();
@@ -80,7 +80,7 @@ public class TelaUsuario {
 
 			} catch (ParseException e) {
 				System.err.println("ERRO: Data de nascimento inválida");
-				;
+				
 			} catch (ValorInvalidoException e) {
 				System.err.println("ERRO: " + e.getMessage());
 			}
@@ -114,7 +114,7 @@ public class TelaUsuario {
 			String logradouro = sc.nextLine();
 			System.out.println("Digite o seu Cep: ");
 			String cep = sc.nextLine();
-			System.out.println("Digite o seu Numero de Residencia: ");
+			System.out.println("Digite o seu Número de Residência: ");
 			int numero = sc.nextInt();
 			System.out.println("Digite o seu Complemento: ");
 			String complemento = sc.nextLine();
@@ -152,6 +152,7 @@ public class TelaUsuario {
 		}
 		
 		System.out.println("Endereços cadastrados com sucesso");
+		telaUsuarioLogado(usuario);
 
 	}
 
@@ -200,6 +201,7 @@ public class TelaUsuario {
 		}
 		
 		System.out.println("Telefones cadastrados com sucesso");
+		telaUsuarioLogado(usuario);
 
 	}
 
@@ -311,7 +313,7 @@ public class TelaUsuario {
 						.print("\nSelecione a empresa pela númeração para mais informações ou 0 para voltar ao menu: ");
 				aux = sc.nextInt();
 				sc.nextLine();
-				if (aux > empresas.size() - 1 || aux < 0) {
+				if (aux > empresas.size() || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 				}
 
@@ -458,6 +460,7 @@ public class TelaUsuario {
 
 		if (pontosFavoritosUsuario.isEmpty()) {
 			System.err.println("O Usuario não possui pontos favoritos");
+			telaUsuarioLogado(usuario);
 		} else {
 
 			for (PontoFavorito pontoFavorito : pontosFavoritosUsuario) {
@@ -501,7 +504,7 @@ public class TelaUsuario {
 					aux = sc.nextInt();
 					sc.nextLine();
 
-					if (aux > pontosFavoritosUsuario.size() - 1 || aux < 0) {
+					if (aux > pontosFavoritosUsuario.size() || aux < 0) {
 						System.err.println("ERRO: Opção Inválida\n");
 
 					} else if (aux == 0) {
@@ -511,6 +514,8 @@ public class TelaUsuario {
 						PontoFavorito pontoFavoritoRet = pontosFavoritosUsuario.get(aux);
 
 						pontoFavoritoService.deletarPontoFvUsuario(pontoFavoritoRet);
+						
+						telaUsuarioLogado(usuario);
 					}
 
 				} else if (opc.equals("2")) {
@@ -601,7 +606,7 @@ public class TelaUsuario {
 				aux = sc.nextInt();
 				sc.nextLine();
 
-				if (aux > enderecos.size() - 1 || aux < 0) {
+				if (aux > enderecos.size() || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 				} else if (aux == 0) {
 					System.out.println("Voltando ao menu...");
@@ -629,7 +634,7 @@ public class TelaUsuario {
 						case "1":
 							System.out.println("Digite o seu novo Estado: ");
 							String novoEstado = sc.nextLine();
-							enderecoEditar.setBairro(novoEstado);
+							enderecoEditar.setEstado(novoEstado);
 							break;
 						case "2":
 							System.out.println("Digite a sua nova Cidade: ");
@@ -693,7 +698,7 @@ public class TelaUsuario {
 						"\nEscolha o telefone que você quer alterar, a partir da numeração ou 0 para voltar ao menu:");
 				int aux = sc.nextInt();
 				sc.nextLine();
-				if (aux > telefones.size() - 1 || aux < 0) {
+				if (aux > telefones.size()  || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 				}
 

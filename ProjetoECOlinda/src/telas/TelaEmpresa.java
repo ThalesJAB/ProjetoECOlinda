@@ -224,7 +224,7 @@ public class TelaEmpresa {
 
 			Endereco endereco = new Endereco(null, cep, logradouro, numero, complemento, bairro, cidade, estado,
 					empresa.getId(), statusEndereco);
-
+			
 			enderecos.add(endereco);
 
 			while (confirmar) {
@@ -235,6 +235,8 @@ public class TelaEmpresa {
 
 				if (aux.equals("0")) {
 					confirmar = false;
+					empresa.addEndereco(endereco);
+					
 				} else if (aux.equals("1")) {
 					confirmar = false;
 				} else {
@@ -248,11 +250,12 @@ public class TelaEmpresa {
 		for (Endereco endereco : enderecos) {
 			enderecoService.cadastrarEndEmpresa(endereco, empresa);
 			empresa.addEndereco(endereco);
+			
 		}
-
 		
 
 		System.out.println("Endereços cadastrados com sucesso");
+		telaEmpresaLogado(empresa);
 
 	}
 
@@ -282,6 +285,7 @@ public class TelaEmpresa {
 		}
 
 		System.out.println("Telefones cadastrados com sucesso");
+		telaEmpresaLogado(empresa);
 
 	}
 
@@ -363,7 +367,7 @@ public class TelaEmpresa {
 				int aux = sc.nextInt();
 				sc.nextLine();
 
-				if (aux > enderecos.size() - 1 || aux < 0) {
+				if (aux > enderecos.size() || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 
 				} else if (aux == 0) {
@@ -395,7 +399,7 @@ public class TelaEmpresa {
 						case "1":
 							System.out.println("Digite o seu novo Estado: ");
 							String novoEstado = sc.nextLine();
-							enderecoEditar.setBairro(novoEstado);
+							enderecoEditar.setEstado(novoEstado);
 							break;
 						case "2":
 							System.out.println("Digite a sua nova Cidade: ");
@@ -459,7 +463,7 @@ public class TelaEmpresa {
 				int aux = sc.nextInt();
 				sc.nextLine();
 
-				if (aux > telefones.size() - 1 || aux < 0) {
+				if (aux > telefones.size() || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 
 				} else if (aux == 0) {
@@ -518,7 +522,7 @@ public class TelaEmpresa {
 				int aux = sc.nextInt();
 				sc.nextLine();
 
-				if (aux > residuos.size() - 1 || aux < 0) {
+				if (aux > residuos.size() || aux < 0) {
 					System.err.println("ERRO: Opção Inválida\n");
 
 				} else if (aux == 0) {
