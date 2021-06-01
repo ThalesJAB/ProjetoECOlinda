@@ -70,6 +70,9 @@ public class TelaEmpresa {
 				Empresa empresa = new Empresa(null, nome, login, senha, email, statusEmpresa, null, null, null);
 
 				confirmar = empresaService.cadastrar(empresa);
+				// Adicionando Empresa a Ponto Favorito
+				PontoFavorito pontoFavEmpresa = new PontoFavorito(null, null, empresa, null);
+				pontoFavoritoService.cadastrarPontoFavorito(pontoFavEmpresa);
 
 				// Cadastro de Endereço
 				// -------------------------------------------------------------------
@@ -84,9 +87,7 @@ public class TelaEmpresa {
 				// --------------------------------
 				telaAdicionarResiduo(empresa);
 
-				// Adicionando Empresa a Ponto Favorito
-				PontoFavorito pontoFavEmpresa = new PontoFavorito(null, null, empresa, null);
-				pontoFavoritoService.cadastrarPontoFavorito(pontoFavEmpresa);
+				confirmar = true;
 
 			} catch (ValorInvalidoException e) {
 				System.err.println("ERRO: " + e.getMessage());
@@ -127,7 +128,8 @@ public class TelaEmpresa {
 			System.out.println("4 - Papel");
 			System.out.println("5 - Orgânico");
 			System.out.println("6 - Resíduos Perigosos");
-			System.out.println("7 - Outros");
+			System.out.println("7 - Resíduos Eletrônicos");
+			System.out.println("8 - Outros");
 			System.out.println("0 - Finalizar cadastrado e ir para o menu:");
 			opcResiduo = sc.nextLine();
 
@@ -176,7 +178,16 @@ public class TelaEmpresa {
 					}
 				}
 				break;
+
 			case "7":
+				for (Residuo residuo : residuos) {
+					if (residuo.getTipoResiduo().equals("Resíduos Eletrônicos")) {
+						residuoService.cadastrarResiduoEmp(residuo, empresa);
+					}
+
+				}
+				break;
+			case "8":
 				Residuo residuo7 = criarResiduo();
 				residuoService.cadastrar(residuo7);
 				residuoService.cadastrarResiduoEmp(residuo7, empresa);
@@ -198,8 +209,6 @@ public class TelaEmpresa {
 		Scanner sc = new Scanner(System.in);
 
 		String aux = null;
-
-		boolean confirmar = true;
 
 		List<Endereco> enderecos = new ArrayList<>();
 
@@ -224,9 +233,10 @@ public class TelaEmpresa {
 
 			Endereco endereco = new Endereco(null, cep, logradouro, numero, complemento, bairro, cidade, estado,
 					empresa.getId(), statusEndereco);
-			
+
 			enderecos.add(endereco);
 
+			boolean confirmar = true;
 			while (confirmar) {
 
 				System.out.println("Deseja cadastrar mais um endereco?:");
@@ -236,7 +246,7 @@ public class TelaEmpresa {
 				if (aux.equals("0")) {
 					confirmar = false;
 					empresa.addEndereco(endereco);
-					
+
 				} else if (aux.equals("1")) {
 					confirmar = false;
 				} else {
@@ -250,9 +260,8 @@ public class TelaEmpresa {
 		for (Endereco endereco : enderecos) {
 			enderecoService.cadastrarEndEmpresa(endereco, empresa);
 			empresa.addEndereco(endereco);
-			
+
 		}
-		
 
 		System.out.println("Endereços cadastrados com sucesso");
 		telaEmpresaLogado(empresa);
@@ -425,6 +434,7 @@ public class TelaEmpresa {
 						case "6":
 							System.out.println("Digite o seu novo Numero de Residência: ");
 							Integer novoNumero = sc.nextInt();
+							sc.nextLine();
 							enderecoEditar.setNumero(novoNumero);
 							break;
 						case "7":
@@ -620,13 +630,13 @@ public class TelaEmpresa {
 				telaAdicionarResiduo(empresa);
 				break;
 			}
-			
-			else if(opc.equals("3")) {
+
+			else if (opc.equals("3")) {
 				telaAdicionarTelefone(empresa);
 				break;
 			}
-			
-			else if(opc.equals("4")) {
+
+			else if (opc.equals("4")) {
 				telaAdicionarEndereco(empresa);
 				break;
 			}

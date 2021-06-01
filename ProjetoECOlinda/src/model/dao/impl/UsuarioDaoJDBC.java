@@ -71,6 +71,7 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 			st.setString(3, usuario.getLogin());
 			st.setString(4, usuario.getSenha());
 			st.setDate(5, new java.sql.Date(usuario.getDataNasc().getTime()));
+			st.setInt(6, usuario.getId());
 
 			int linhasAf = st.executeUpdate();
 
@@ -93,20 +94,27 @@ public class UsuarioDaoJDBC implements UsuarioDao {
 		PreparedStatement st4 = null;
 
 		try {
+
 			st1 = connection.prepareStatement("UPDATE USUARIO " + "SET status = false " + "WHERE id_usuario = ?;");
-			st1.setInt(1, usuario.getId());
+		
 
 			st2 = connection.prepareStatement(
 					"UPDATE USUARIO_PONTO_FAVORITO " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
-			st2.setInt(1, usuario.getId());
+			
 
 			st3 = connection
 					.prepareStatement("UPDATE TELEFONE " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
-			st3.setInt(1, usuario.getId());
+			
 
 			st4 = connection.prepareStatement(
 					"UPDATE USUARIO_ENDERECO " + "SET status = false " + "WHERE usuario_id_usuario = ?;");
+
+			st1.setInt(1, usuario.getId());
+			st2.setInt(1, usuario.getId());
+			st3.setInt(1, usuario.getId());
 			st4.setInt(1, usuario.getId());
+
+
 
 			int linhasAf = st1.executeUpdate();
 			st2.execute();

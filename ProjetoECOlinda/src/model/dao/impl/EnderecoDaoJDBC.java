@@ -137,6 +137,7 @@ public class EnderecoDaoJDBC implements EnderecoDao {
 			}
 		} finally {
 			DB.closeStatement(st);
+			DB.closeResultSet(rs);
 		}
 
 	}

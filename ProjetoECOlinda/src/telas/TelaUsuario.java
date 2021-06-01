@@ -100,7 +100,7 @@ public class TelaUsuario {
 
 		String aux = null;
 
-		boolean confirmar = true;
+		
 
 		do {
 
@@ -116,6 +116,7 @@ public class TelaUsuario {
 			String cep = sc.nextLine();
 			System.out.println("Digite o seu Número de Residência: ");
 			int numero = sc.nextInt();
+			sc.nextLine();
 			System.out.println("Digite o seu Complemento: ");
 			String complemento = sc.nextLine();
 			boolean statusEndereco = true;
@@ -124,6 +125,8 @@ public class TelaUsuario {
 					statusEndereco);
 
 			enderecos.add(endereco);
+			
+			boolean confirmar = true;
 
 			while (confirmar) {
 
@@ -157,11 +160,9 @@ public class TelaUsuario {
 	}
 
 	public void telaCadastrarTelefone(Usuario usuario) {
-
 		Scanner sc = new Scanner(System.in);
 		List<Telefone> telefones = new ArrayList<>();
-		boolean confirmar = true;
-		String aux = null;
+		int aux = 0;
 		do {
 
 			System.out.println("Digite o seu Telefone: ");
@@ -171,35 +172,18 @@ public class TelaUsuario {
 			Telefone telefone = new Telefone(null, numtelefone, usuario.getId(), null, statusTelefone);
 			telefones.add(telefone);
 
-			while (confirmar) {
+			System.out.println("Deseja cadastrar mais um telefone?:");
+			System.out.println("1 - SIM\n0 - NÃO\n:");
+			aux = sc.nextInt();
+			sc.nextLine();
 
-				System.out.println("Deseja cadastrar mais um telefone?:");
-				System.out.println("1 - SIM\n0 - NÃO\n:");
-				aux = sc.nextLine();
-
-				if (aux.equals("0")) {
-
-					confirmar = false;
-
-				} else if (aux.equals("1")) {
-
-					confirmar = false;
-
-				} else {
-
-					System.err.println("ERRO: Opção Inválida\n");
-
-				}
-
-			}
-
-		} while (!aux.equals("0"));
+		} while (aux != 0);
 
 		for (Telefone telefone : telefones) {
 			telefoneService.cadastrar(telefone);
 			usuario.addTelefone(telefone);
 		}
-		
+
 		System.out.println("Telefones cadastrados com sucesso");
 		telaUsuarioLogado(usuario);
 
@@ -250,7 +234,8 @@ public class TelaUsuario {
 			System.out.println("4 - Metal");
 			System.out.println("5 - Orgânico");
 			System.out.println("6 - Resíduos Perigosos");
-			System.out.println("7 - Outros");
+			System.out.println("7 - Resíduos Eletrônicos");
+			System.out.println("8 - Outros");
 			System.out.println("0 - Voltar");
 			opc = sc.next();
 
@@ -284,8 +269,13 @@ public class TelaUsuario {
 				residuo.setTipoResiduo("Resíduos Perigosos");
 				empresas = empresaService.listarEmpresaResiduo(residuo);
 				break;
-
+				
 			case "7":
+				residuo.setTipoResiduo("Resíduos Eletrônicos");
+				empresas = empresaService.listarEmpresaResiduo(residuo);
+				break;
+
+			case "8":
 				System.out.println("Digite o residuo: ");
 				String aux = sc.nextLine();
 				residuo.setTipoResiduo(aux);
@@ -570,7 +560,7 @@ public class TelaUsuario {
 							usuario.setLogin(novoLogin);
 							break;
 						case "4":
-							System.out.println("Digite a nova senha da Usuario:");
+							System.out.println("Digite a nova senha do Usuario:");
 							String novaSenha = sc.nextLine();
 							usuario.setSenha(novaSenha);
 							break;
@@ -660,10 +650,11 @@ public class TelaUsuario {
 						case "6":
 							System.out.println("Digite o seu novo Numero de Residência");
 							Integer novoNumero = sc.nextInt();
+							sc.nextLine();
 							enderecoEditar.setNumero(novoNumero);
 							break;
 						case "7":
-							System.out.println("Digite o seu novo complemento");
+							System.out.println("Digite o seu novo Complemento");
 							String novoComplemento = sc.nextLine();
 							enderecoEditar.setComplemento(novoComplemento);
 							break;

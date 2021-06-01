@@ -135,9 +135,11 @@ public class EmpresaDaoJDBC implements EmpresaDao {
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
+			DB.closeStatement(st4);
 			DB.closeStatement(st3);
 			DB.closeStatement(st2);
 			DB.closeStatement(st1);
+			
 		}
 
 	}
