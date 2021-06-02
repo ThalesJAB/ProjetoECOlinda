@@ -1,4 +1,4 @@
-package application;
+package testes;
 
 import model.dao.DaoFactory;
 import model.dao.ResiduoDao;
